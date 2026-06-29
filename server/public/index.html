@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quote Comparison | YourPolicy</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    /* ─── TOKENS ─────────────────────────────────────── */
+    :root {
+      --teal-900: #0d3d52;
+      --teal-700: #155870;
+      --teal-500: #1e7d9a;
+      --teal-300: #3ab6c7;
+      --teal-100: #e8f6f9;
+      --gold:     #d8b000;
+      --gold-lt:  #fdf6cc;
+      --green:    #1a8c5b;
+      --red:      #c0392b;
+      --bg:       #f0f5f8;
+      --surface:  #ffffff;
+      --border:   #d4e3ea;
+      --text:     #1a2e38;
+      --muted:    #5a7380;
+      --font:     'Nunito', system-ui, sans-serif;
+      --radius:   14px;
+      --shadow:   0 4px 24px rgba(13,61,82,0.09);
+    }
+
+    /* ─── RESET ──────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; -webkit-font-smoothing: antialiased; }
+    input, select, textarea, button { font-family: var(--font); }
+
+    /* ─── SCREENS ─────────────────────────────────────── */
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* ─── SHARED HEADER ──────────────────────────────── */
+    .app-header {
+      background: var(--teal-700);
+      height: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .yp-logo { font-size: 1.35rem; font-weight: 900; color: #fff; letter-spacing: -0.4px; }
+    .yp-logo em { color: var(--gold); font-style: normal; }
+    .header-sub { font-size: 0.72rem; font-weight: 700; letter-spacing: 1.6px; text-transform: uppercase; color: rgba(255,255,255,0.5); }
+
+    /* ─── PRODUCER SCREEN ────────────────────────────── */
+    .producer-wrap { max-width: 960px; margin: 0 auto; padding: 36px 24px 80px; }
+
+    .page-eyebrow {
+      font-size: 0.68rem; font-weight: 800; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--teal-500); margin-bottom: 6px;
+    }
+    .page-title { font-size: 1.6rem; font-weight: 900; color: var(--teal-700); margin-bottom: 4px; }
+    .page-sub { font-size: 0.88rem; color: var(--muted); margin-bottom: 32px; }
+
+    /* Cards */
+    .card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+    }
+    .card-title {
+      font-size: 0.9rem; font-weight: 800; color: var(--teal-700);
+      text-transform: uppercase; letter-spacing: 0.8px;
+      margin-bottom: 18px; display: flex; align-items: center; gap: 8px;
+    }
+    .card-title span { font-size: 1rem; }
+
+    /* Form grid */
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px,1fr)); gap: 14px; }
+    .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+    label.field-label {
+      display: block; font-size: 0.68rem; font-weight: 800;
+      letter-spacing: 1px; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 5px;
+    }
+    input[type=text], input[type=date], input[type=email], input[type=tel], select, textarea {
+      width: 100%; padding: 9px 13px; font-size: 0.88rem; font-weight: 600;
+      border: 1.5px solid var(--border); border-radius: 9px;
+      color: var(--text); background: #fff; outline: none;
+      transition: border-color 0.15s;
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--teal-500); }
+    textarea { resize: vertical; min-height: 72px; }
+    select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235a7380' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+
+    /* Carrier input block */
+    .carrier-block {
+      background: #f7fbfd;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 22px;
+      margin-bottom: 14px;
+      position: relative;
+    }
+    .carrier-block-header {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 18px; flex-wrap: wrap;
+    }
+    .carrier-select-wrap { display: flex; gap: 10px; flex: 1; min-width: 200px; flex-wrap: wrap; }
+
+    .rec-toggle {
+      display: flex; align-items: center; gap: 7px;
+      font-size: 0.8rem; font-weight: 800; color: var(--teal-700);
+      cursor: pointer; white-space: nowrap;
+      background: var(--teal-100); border: 1.5px solid var(--border);
+      padding: 7px 14px; border-radius: 8px; transition: all 0.15s;
+      user-select: none;
+    }
+    .rec-toggle.active { background: var(--gold-lt); border-color: var(--gold); color: #5a3e00; }
+    .rec-toggle input { display: none; }
+
+    .remove-btn {
+      background: none; border: 1.5px solid #e0b0b0; color: var(--red);
+      border-radius: 8px; padding: 7px 13px; font-size: 0.78rem; font-weight: 700;
+      cursor: pointer; transition: all 0.15s; white-space: nowrap;
+    }
+    .remove-btn:hover { background: var(--red); color: #fff; border-color: var(--red); }
+
+    .coverage-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(175px,1fr));
+      gap: 10px;
+    }
+    .coverage-field label.field-label { margin-bottom: 4px; }
+
+    /* Section divider */
+    .section-divider { height: 1px; background: var(--border); margin: 8px 0 20px; }
+
+    /* Buttons */
+    .btn { display: inline-flex; align-items: center; gap: 7px; padding: 11px 22px; border-radius: 9px; font-size: 0.88rem; font-weight: 800; cursor: pointer; border: none; transition: all 0.15s; letter-spacing: 0.2px; }
+    .btn-primary { background: var(--teal-700); color: #fff; }
+    .btn-primary:hover { background: var(--teal-500); }
+    .btn-outline { background: #fff; color: var(--teal-700); border: 1.5px solid var(--teal-700); }
+    .btn-outline:hover { background: var(--teal-700); color: #fff; }
+    .btn-gold { background: var(--gold); color: #3a2e00; }
+    .btn-gold:hover { background: #c9a300; }
+    .btn-sm { padding: 8px 16px; font-size: 0.8rem; }
+
+    .action-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 24px; }
+
+    /* ─── PDF / CLIENT OUTPUT SCREEN ────────────────── */
+    #pdf-screen {
+      background: #fff;
+      min-height: 100vh;
+    }
+
+    /* PDF toolbar (hidden on print) */
+    .pdf-toolbar {
+      background: var(--teal-900);
+      padding: 12px 28px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .pdf-toolbar .toolbar-label { font-size: 0.8rem; font-weight: 700; color: rgba(255,255,255,0.65); margin-right: 4px; }
+
+    /* PDF Document */
+    .pdf-doc {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 0 60px;
+    }
+
+    /* PDF Header */
+    .pdf-header {
+      background: linear-gradient(135deg, var(--teal-700) 0%, var(--teal-500) 100%);
+      padding: 36px 48px 32px;
+      position: relative;
+      overflow: hidden;
+    }
+    .pdf-header::before {
+      content: '';
+      position: absolute;
+      right: -40px; top: -40px;
+      width: 220px; height: 220px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.05);
+    }
+    .pdf-header::after {
+      content: '';
+      position: absolute;
+      right: 60px; bottom: -60px;
+      width: 150px; height: 150px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.04);
+    }
+    .pdf-logo { font-size: 1.5rem; font-weight: 900; color: #fff; letter-spacing: -0.3px; margin-bottom: 2px; }
+    .pdf-logo em { color: var(--gold); font-style: normal; }
+    .pdf-logo-sub { font-size: 0.72rem; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 22px; }
+    .pdf-headline { font-size: 1.7rem; font-weight: 900; color: #fff; line-height: 1.2; margin-bottom: 8px; }
+    .pdf-tagline { font-size: 0.88rem; color: rgba(255,255,255,0.75); max-width: 480px; line-height: 1.6; }
+
+    /* Client meta strip */
+    .pdf-meta-strip {
+      background: rgba(0,0,0,0.18);
+      border-radius: 10px;
+      padding: 14px 20px;
+      margin-top: 24px;
+      display: flex;
+      gap: 28px;
+      flex-wrap: wrap;
+    }
+    .pdf-meta-item label {
+      display: block; font-size: 0.62rem; font-weight: 800;
+      letter-spacing: 1.3px; text-transform: uppercase;
+      color: rgba(255,255,255,0.45); margin-bottom: 3px;
+    }
+    .pdf-meta-item span { font-size: 0.88rem; font-weight: 700; color: #fff; }
+
+    /* PDF Body */
+    .pdf-body { padding: 36px 48px; }
+
+    /* Recommendation banner */
+    .rec-banner {
+      background: linear-gradient(135deg, #e8f7f0 0%, #f0fdf8 100%);
+      border: 2px solid #a8dfc5;
+      border-radius: 12px;
+      padding: 22px 26px;
+      margin-bottom: 32px;
+      display: flex;
+      gap: 18px;
+      align-items: flex-start;
+    }
+    .rec-banner-icon {
+      width: 46px; height: 46px; flex-shrink: 0;
+      background: var(--teal-700);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem;
+    }
+    .rec-banner h3 { font-size: 1.05rem; font-weight: 900; color: var(--teal-700); margin-bottom: 4px; }
+    .rec-banner p { font-size: 0.82rem; color: var(--muted); line-height: 1.55; }
+    .rec-banner-stats { display: flex; gap: 16px; margin-top: 14px; flex-wrap: wrap; }
+    .rec-stat { background: #fff; border: 1.5px solid var(--border); border-radius: 9px; padding: 10px 16px; }
+    .rec-stat .rs-label { font-size: 0.62rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 3px; }
+    .rec-stat .rs-val { font-size: 1rem; font-weight: 900; color: var(--teal-700); }
+    .rec-stat .rs-val.green { color: var(--green); }
+    .rec-stat .rs-val.gold { color: #a07800; }
+
+    /* Section heading */
+    .pdf-section-head {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 16px;
+    }
+    .pdf-section-head h2 { font-size: 1rem; font-weight: 900; color: var(--teal-700); }
+    .pdf-section-head .eyebrow {
+      font-size: 0.62rem; font-weight: 800; letter-spacing: 1.8px;
+      text-transform: uppercase; color: var(--teal-300);
+      display: block; margin-bottom: 2px;
+    }
+
+    /* ─── COMPARISON TABLE ───────────────────────────── */
+    .cmp-table-wrap { overflow-x: auto; margin-bottom: 32px; border-radius: 12px; border: 1.5px solid var(--border); box-shadow: var(--shadow); }
+
+    table.cmp {
+      width: 100%; border-collapse: collapse; min-width: 500px;
+    }
+
+    /* Carrier header row */
+    table.cmp thead tr.carrier-row th {
+      padding: 14px 18px; font-size: 0.82rem; font-weight: 900;
+      border-bottom: 3px solid var(--border); text-align: center; white-space: nowrap;
+    }
+    table.cmp thead tr.carrier-row th.label-th {
+      background: #eaf3f7; text-align: left;
+      font-size: 0.7rem; letter-spacing: 1px; text-transform: uppercase;
+      color: var(--muted); font-weight: 800; width: 220px;
+    }
+    table.cmp thead tr.carrier-row th.carrier-th {
+      background: var(--teal-700); color: #fff;
+      border-left: 1px solid rgba(255,255,255,0.1);
+    }
+    table.cmp thead tr.carrier-row th.carrier-th.is-rec {
+      background: var(--gold); color: #3a2e00;
+    }
+    table.cmp thead tr.carrier-row th.carrier-th.is-best {
+      background: var(--teal-900); color: #fff;
+    }
+    .th-carrier-name { font-size: 0.92rem; font-weight: 900; display: block; }
+    .th-carrier-badge {
+      display: inline-block; margin-top: 5px;
+      font-size: 0.6rem; font-weight: 900; letter-spacing: 1px;
+      text-transform: uppercase; padding: 2px 8px; border-radius: 20px;
+    }
+    .badge-rec { background: rgba(255,255,255,0.25); color: #fff; }
+    .badge-rec-gold { background: rgba(58,46,0,0.15); color: #3a2e00; }
+    .badge-best { background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.9); }
+
+    /* Section sub-header row */
+    table.cmp tr.section-row td {
+      background: #f0f7fa;
+      padding: 7px 18px;
+      font-size: 0.65rem; font-weight: 900; letter-spacing: 1.5px;
+      text-transform: uppercase; color: var(--teal-500);
+      border-top: 2px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* Data rows */
+    table.cmp tbody tr.data-row td {
+      padding: 11px 18px; font-size: 0.85rem;
+      border-bottom: 1px solid #edf3f6; vertical-align: middle;
+    }
+    table.cmp tbody tr.data-row:last-of-type td { border-bottom: none; }
+    table.cmp tbody tr.data-row td.label-td {
+      font-weight: 700; color: var(--text);
+      background: #f9fcfd; white-space: nowrap;
+    }
+    table.cmp tbody tr.data-row td.label-td .td-note {
+      display: block; font-size: 0.68rem; font-weight: 400; color: var(--muted); margin-top: 1px;
+    }
+    table.cmp tbody tr.data-row td.val-td {
+      text-align: center; font-weight: 600; color: var(--text);
+      border-left: 1px solid #edf3f6;
+    }
+    table.cmp tbody tr.data-row td.val-td.best-val { color: var(--green); font-weight: 900; }
+    table.cmp tbody tr.data-row td.val-td.empty-val { color: #ccc; font-weight: 400; }
+
+    /* Premium highlight row */
+    table.cmp tbody tr.premium-row td {
+      background: #e8f4f8 !important;
+      font-size: 1rem; font-weight: 900;
+      border-top: 2px solid var(--border);
+      border-bottom: 2px solid var(--border);
+    }
+    table.cmp tbody tr.premium-row td.val-td.best-val { color: var(--green); }
+    table.cmp tbody tr.premium-row td.val-td { border-left: 1px solid #c8dde6; }
+
+    .inline-badge {
+      display: inline-block; font-size: 0.58rem; font-weight: 900;
+      letter-spacing: 0.8px; text-transform: uppercase;
+      padding: 1px 6px; border-radius: 20px;
+      margin-left: 5px; vertical-align: middle;
+      background: var(--gold); color: #3a2e00;
+    }
+
+    /* Agent notes */
+    .agent-notes-box {
+      background: #f7fbfd;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 28px;
+    }
+    .agent-notes-box h3 {
+      font-size: 0.88rem; font-weight: 900; color: var(--teal-700);
+      margin-bottom: 14px; display: flex; align-items: center; gap: 7px;
+    }
+    .note-row {
+      display: flex; gap: 12px; padding: 10px 0;
+      border-bottom: 1px solid var(--border); font-size: 0.83rem; line-height: 1.6;
+    }
+    .note-row:last-child { border-bottom: none; }
+    .note-row .ni { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+    .note-row strong { color: var(--teal-700); }
+
+    /* Coverage standards footer note */
+    .coverage-standard {
+      background: #edf9f4; border: 1.5px solid #b2ddc9;
+      border-radius: 10px; padding: 14px 18px;
+      font-size: 0.8rem; color: #1a4030; line-height: 1.6;
+      margin-bottom: 28px;
+    }
+    .coverage-standard strong { color: var(--teal-700); display: block; margin-bottom: 3px; }
+
+    /* PDF Footer */
+    .pdf-footer {
+      border-top: 2px solid var(--border);
+      padding: 24px 48px;
+      display: flex; justify-content: space-between;
+      align-items: flex-start; gap: 20px; flex-wrap: wrap;
+    }
+    .pdf-footer-logo { font-size: 1.1rem; font-weight: 900; color: var(--teal-700); }
+    .pdf-footer-logo em { color: var(--gold); font-style: normal; }
+    .pdf-footer-legal { font-size: 0.68rem; color: var(--muted); max-width: 480px; line-height: 1.6; margin-top: 6px; }
+    .pdf-footer-agent { text-align: right; font-size: 0.8rem; color: var(--muted); }
+    .pdf-footer-agent strong { display: block; font-size: 0.9rem; color: var(--teal-700); font-weight: 800; margin-bottom: 3px; }
+
+    /* ─── PRINT RULES ────────────────────────────────── */
+    @media print {
+      .no-print { display: none !important; }
+      .pdf-toolbar { display: none !important; }
+      .app-header { display: none !important; }
+      body { background: #fff; }
+      .pdf-doc { max-width: 100%; }
+      .pdf-header { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .cmp-table-wrap { box-shadow: none; }
+      table.cmp thead tr.carrier-row th.carrier-th { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      table.cmp thead tr.carrier-row th.carrier-th.is-rec { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .rec-banner { print-color-adjust: exact; -webkit-print-color-adjust: exact; break-inside: avoid; }
+      table.cmp { break-inside: auto; }
+      table.cmp tr { break-inside: avoid; }
+    }
+
+    /* ─── RESPONSIVE ─────────────────────────────────── */
+    @media (max-width: 640px) {
+      .pdf-header { padding: 24px 20px 20px; }
+      .pdf-body { padding: 20px 16px; }
+      .pdf-footer { padding: 20px 16px; flex-direction: column; }
+      .pdf-footer-agent { text-align: left; }
+      .producer-wrap { padding: 20px 14px 60px; }
+      .card { padding: 18px 16px; }
+      .coverage-grid { grid-template-columns: 1fr 1fr; }
+      .form-grid-2 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════
+     SHARED HEADER
+════════════════════════════════════════════════════ -->
+<header class="app-header">
+  <div class="yp-logo">Your<em>Policy</em></div>
+  <div class="header-sub">Quote Comparison Tool</div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════
+     SCREEN 1 — PRODUCER INPUT
+════════════════════════════════════════════════════ -->
+<div id="producer-screen" class="screen active">
+  <div class="producer-wrap">
+
+    <div class="page-eyebrow">Producer Dashboard</div>
+    <div class="page-title">Build a Quote Comparison</div>
+    <div class="page-sub">Enter client details and carrier quotes below. When complete, generate the branded client PDF.</div>
+
+    <!-- Client Info -->
+    <div class="card">
+      <div class="card-title"><span>👤</span> Client Information</div>
+      <div class="form-grid">
+        <div>
+          <label class="field-label">Client Full Name</label>
+          <input type="text" id="f-client" placeholder="e.g. John & Sarah Smith">
+        </div>
+        <div>
+          <label class="field-label">Policy Type</label>
+          <select id="f-policy-type">
+            <option value="">Select...</option>
+            <option>Auto</option>
+            <option>Home</option>
+            <option>Auto + Home</option>
+            <option>Auto + Renters</option>
+            <option>Umbrella</option>
+            <option>Multi-Policy Bundle</option>
+          </select>
+        </div>
+        <div>
+          <label class="field-label">Effective Date</label>
+          <input type="date" id="f-eff-date">
+        </div>
+        <div>
+          <label class="field-label">Current Carrier</label>
+          <input type="text" id="f-current-carrier" placeholder="e.g. Allstate">
+        </div>
+        <div>
+          <label class="field-label">Current Annual Premium</label>
+          <input type="text" id="f-current-premium" placeholder="e.g. $2,400">
+        </div>
+      </div>
+    </div>
+
+    <!-- Agent Info -->
+    <div class="card">
+      <div class="card-title"><span>🏢</span> Agent Information</div>
+      <div class="form-grid">
+        <div>
+          <label class="field-label">Agent Name</label>
+          <input type="text" id="f-agent" placeholder="Your full name">
+        </div>
+        <div>
+          <label class="field-label">Agent Phone</label>
+          <input type="tel" id="f-phone" placeholder="(555) 555-5555">
+        </div>
+        <div>
+          <label class="field-label">Agent Email</label>
+          <input type="email" id="f-email" placeholder="you@your-policy.com">
+        </div>
+      </div>
+    </div>
+
+    <!-- Carrier Quotes -->
+    <div class="card">
+      <div class="card-title"><span>📋</span> Carrier Quotes</div>
+      <p style="font-size:0.82rem;color:var(--muted);margin-bottom:20px;">Add each carrier you've quoted. Fill in every available coverage field. Mark your recommendation with ★.</p>
+      <div id="carrier-blocks"></div>
+      <button class="btn btn-outline btn-sm" onclick="addCarrier()">+ Add Carrier</button>
+    </div>
+
+    <!-- Notes -->
+    <div class="card">
+      <div class="card-title"><span>📝</span> Agent Notes</div>
+      <div style="margin-bottom:14px;">
+        <label class="field-label">Recommendation Summary</label>
+        <textarea id="f-notes" placeholder="Why are you recommending this carrier? What coverage improvements are included? Mention any rate changes that triggered the remarket."></textarea>
+      </div>
+      <div>
+        <label class="field-label">Coverage Gap / ARO Opportunity</label>
+        <textarea id="f-aro" placeholder="e.g. Client currently has no umbrella. With their home value and auto limits, umbrella is strongly recommended. Cross-sell opportunity flagged."></textarea>
+      </div>
+    </div>
+
+    <div class="action-bar">
+      <button class="btn btn-primary" onclick="generatePDF()">⚡ Generate Client Comparison</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     SCREEN 2 — CLIENT PDF OUTPUT
+════════════════════════════════════════════════════ -->
+<div id="pdf-screen" class="screen">
+
+  <!-- Toolbar (hidden on print) -->
+  <div class="pdf-toolbar no-print">
+    <button class="btn btn-outline btn-sm" onclick="goBack()" style="color:#fff;border-color:rgba(255,255,255,0.35);">← Back to Editor</button>
+    <span class="toolbar-label">Ready to send</span>
+    <button class="btn btn-gold btn-sm" onclick="window.print()">🖨 Save as PDF</button>
+  </div>
+
+  <!-- Document -->
+  <div class="pdf-doc" id="pdf-doc">
+
+    <!-- Header -->
+    <div class="pdf-header">
+      <div class="pdf-logo">Your<em>Policy</em></div>
+      <div class="pdf-logo-sub">Coverage Comparison</div>
+      <div class="pdf-headline">Your Personalized<br>Coverage Comparison</div>
+      <div class="pdf-tagline">We've shopped the market on your behalf. Here's a clear, side-by-side look at your options so you can choose with confidence.</div>
+
+      <div class="pdf-meta-strip" id="pdf-meta-strip">
+        <!-- populated by JS -->
+      </div>
+    </div>
+
+    <!-- Body -->
+    <div class="pdf-body">
+
+      <!-- Recommendation banner -->
+      <div id="pdf-rec-banner"></div>
+
+      <!-- Comparison table -->
+      <div class="pdf-section-head">
+        <div>
+          <span class="eyebrow">Side-by-Side</span>
+          <h2 id="pdf-table-heading">Coverage Comparison</h2>
+        </div>
+      </div>
+
+      <div class="cmp-table-wrap">
+        <table class="cmp" id="cmp-table">
+          <!-- populated by JS -->
+        </table>
+      </div>
+
+      <!-- Agent notes -->
+      <div id="pdf-notes"></div>
+
+      <!-- Coverage standard -->
+      <div class="coverage-standard">
+        <strong>YourPolicy Coverage Standards</strong>
+        Auto policies are quoted at a minimum 100/300 bodily injury liability. Home policies include a minimum of $300,000 liability and full replacement cost coverage. If you have questions about your limits, we're always available to review what's right for your household.
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="pdf-footer">
+      <div>
+        <div class="pdf-footer-logo">Your<em>Policy</em></div>
+        <div class="pdf-footer-legal">This comparison is prepared by YourPolicy for informational purposes only. Coverage details are based on available quote information at the time of preparation. Final policy terms, conditions, and premiums are subject to carrier underwriting approval. This document does not constitute a binder or guarantee of coverage.</div>
+      </div>
+      <div class="pdf-footer-agent" id="pdf-footer-agent">
+        <!-- populated by JS -->
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════════════════════ -->
+<script>
+// ── CARRIER LIST ──────────────────────────────────────
+const CARRIERS = [
+  'Progressive','Travelers','Liberty Mutual','PEMCO','Allstate',
+  'Foremost','Hanover','Goodville Mutual','Acuity','Hartford',
+  'Safeco','State Farm','Nationwide','Bristol West','Other'
+];
+
+// ── COVERAGE FIELDS ───────────────────────────────────
+const SECTIONS = [
+  {
+    label: 'Premium',
+    fields: [
+      { key:'premium',   label:'Total Annual Premium',   note:'Full-term cost',              isPremium: true },
+      { key:'monthly',   label:'Monthly Payment',        note:'Estimated (fees may apply)'                  },
+    ]
+  },
+  {
+    label: 'Auto Coverages',
+    fields: [
+      { key:'bi',        label:'Bodily Injury',          note:'Per person / per accident'   },
+      { key:'pd',        label:'Property Damage',        note:'Per accident'                },
+      { key:'um',        label:'Uninsured Motorist',     note:'UM / UIM'                    },
+      { key:'collision', label:'Collision',              note:'Deductible'                  },
+      { key:'comp',      label:'Comprehensive',          note:'Deductible'                  },
+      { key:'medpay',    label:'Medical Payments / PIP', note:'Per person'                  },
+      { key:'rental',    label:'Rental Reimbursement',   note:'Per day / max'               },
+      { key:'roadside',  label:'Roadside Assistance',    note:'Included / Not included'     },
+    ]
+  },
+  {
+    label: 'Home Coverages',
+    fields: [
+      { key:'dwelling',  label:'Dwelling (Coverage A)',  note:'Replacement cost'            },
+      { key:'contents',  label:'Personal Property (C)',  note:'Replacement cost'            },
+      { key:'loss_use',  label:'Loss of Use (D)',        note:'Additional living expenses'  },
+      { key:'liab_h',    label:'Home Liability',         note:'Per occurrence'              },
+      { key:'med_h',     label:'Medical Payments',       note:'Per person'                  },
+    ]
+  },
+  {
+    label: 'Additional',
+    fields: [
+      { key:'umbrella',  label:'Umbrella Limit',         note:'If quoted'                   },
+      { key:'deductible',label:'Deductible (General)',   note:'Where applicable'            },
+      { key:'eff_date',  label:'Quote Effective Date',   note:''                            },
+      { key:'quote_num', label:'Quote / Policy #',       note:''                            },
+    ]
+  }
+];
+
+// ── STATE ─────────────────────────────────────────────
+let carriers = [];
+let recIdx = -1;
+
+// ── INIT ──────────────────────────────────────────────
+addCarrier('Progressive');
+addCarrier('Travelers');
+addCarrier();
+
+// ── ADD / REMOVE CARRIER ──────────────────────────────
+function addCarrier(preset = '') {
+  const id = Date.now() + Math.random();
+  carriers.push({ id, name: preset, fields: {}, isRec: false });
+  renderCarrierBlocks();
+}
+
+function removeCarrier(id) {
+  const idx = carriers.findIndex(c => c.id === id);
+  carriers = carriers.filter(c => c.id !== id);
+  if (recIdx === idx) recIdx = -1;
+  else if (recIdx > idx) recIdx--;
+  renderCarrierBlocks();
+}
+
+function setRec(idx) {
+  recIdx = recIdx === idx ? -1 : idx;
+  carriers.forEach((c, i) => c.isRec = i === recIdx);
+  renderCarrierBlocks();
+}
+
+// ── RENDER PRODUCER INPUTS ────────────────────────────
+function renderCarrierBlocks() {
+  const wrap = document.getElementById('carrier-blocks');
+  wrap.innerHTML = carriers.map((c, ci) => `
+    <div class="carrier-block" id="cb-${c.id}">
+      <div class="carrier-block-header">
+        <div class="carrier-select-wrap">
+          <select style="flex:1;min-width:180px;" onchange="carriers[${ci}].name=this.value;syncCarrierName(${ci},this.value)">
+            <option value="">Select carrier...</option>
+            ${CARRIERS.map(n=>`<option value="${n}" ${c.name===n?'selected':''}>${n}</option>`).join('')}
+          </select>
+          <input type="text" placeholder="Or type name" style="flex:1;min-width:130px;"
+            value="${c.name&&!CARRIERS.includes(c.name)?c.name:''}"
+            oninput="carriers[${ci}].name=this.value||carriers[${ci}].name">
+        </div>
+        <label class="rec-toggle ${recIdx===ci?'active':''}" onclick="setRec(${ci})">
+          <input type="radio" name="rec">
+          ${recIdx===ci?'★ Recommended':'☆ Recommend'}
+        </label>
+        <button class="remove-btn" onclick="removeCarrier(${c.id})">✕ Remove</button>
+      </div>
+
+      <div class="coverage-grid">
+        ${SECTIONS.flatMap(s => s.fields).map(f => `
+          <div class="coverage-field">
+            <label class="field-label">${f.label}</label>
+            <input type="text" placeholder="—"
+              value="${esc(c.fields[f.key]||'')}"
+              oninput="carriers[${ci}].fields['${f.key}']=this.value">
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function syncCarrierName(ci, val) {
+  if (val !== 'Other') carriers[ci].name = val;
+}
+
+// ── GENERATE PDF OUTPUT ───────────────────────────────
+function generatePDF() {
+  if (!carriers.length) { alert('Add at least one carrier quote.'); return; }
+
+  const client      = v('f-client')      || 'Valued Client';
+  const policyType  = v('f-policy-type') || '';
+  const effDate     = formatDate(v('f-eff-date'));
+  const curCarrier  = v('f-current-carrier') || '';
+  const curPremium  = v('f-current-premium') || '';
+  const agentName   = v('f-agent')  || 'Your YourPolicy Agent';
+  const agentPhone  = v('f-phone')  || '';
+  const agentEmail  = v('f-email')  || '';
+  const notes       = v('f-notes')  || '';
+  const aro         = v('f-aro')    || '';
+
+  // Find lowest annual premium
+  let lowestPrem = Infinity, lowestIdx = -1;
+  carriers.forEach((c, i) => {
+    const n = parseDollar(c.fields.premium);
+    if (n < lowestPrem) { lowestPrem = n; lowestIdx = i; }
+  });
+
+  const recCarrier = recIdx >= 0 ? carriers[recIdx] : null;
+
+  // ── META STRIP ──
+  document.getElementById('pdf-meta-strip').innerHTML = [
+    ['Prepared For', client],
+    ['Policy Type',  policyType || '—'],
+    ['Effective Date', effDate || '—'],
+    ['Current Carrier', curCarrier || '—'],
+    ['Current Premium', curPremium || '—'],
+    ['Date Prepared', today()],
+  ].map(([l,v]) => `
+    <div class="pdf-meta-item">
+      <label>${l}</label>
+      <span>${esc(v)}</span>
+    </div>
+  `).join('');
+
+  // ── RECOMMENDATION BANNER ──
+  let recHTML = '';
+  if (recCarrier) {
+    const recPrem = recCarrier.fields.premium || '';
+    const savings = calcSavings(curPremium, recPrem);
+    recHTML = `
+      <div class="rec-banner">
+        <div class="rec-banner-icon">⭐</div>
+        <div style="flex:1;">
+          <h3>Our Recommendation: ${esc(recCarrier.name)}</h3>
+          <p>Based on your coverage needs and household profile, we recommend the following carrier and coverage package.</p>
+          <div class="rec-banner-stats">
+            ${recPrem ? `<div class="rec-stat"><div class="rs-label">Annual Premium</div><div class="rs-val green">${esc(recPrem)}</div></div>` : ''}
+            ${recCarrier.fields.monthly ? `<div class="rec-stat"><div class="rs-label">Monthly Payment</div><div class="rs-val">${esc(recCarrier.fields.monthly)}</div></div>` : ''}
+            ${recCarrier.fields.bi ? `<div class="rec-stat"><div class="rs-label">Bodily Injury</div><div class="rs-val">${esc(recCarrier.fields.bi)}</div></div>` : ''}
+            ${savings ? `<div class="rec-stat"><div class="rs-label">Est. Annual Savings</div><div class="rs-val gold">${savings}</div></div>` : ''}
+          </div>
+        </div>
+      </div>`;
+  }
+  document.getElementById('pdf-rec-banner').innerHTML = recHTML;
+
+  // ── TABLE HEADING ──
+  document.getElementById('pdf-table-heading').textContent =
+    `Coverage Comparison — ${carriers.length} Carrier${carriers.length!==1?'s':''}`;
+
+  // ── COMPARISON TABLE ──
+  const thead = buildThead(lowestIdx);
+  const tbody = buildTbody(lowestIdx);
+  document.getElementById('cmp-table').innerHTML = thead + tbody;
+
+  // ── AGENT NOTES ──
+  let notesHTML = '';
+  if (notes || aro) {
+    notesHTML = `
+      <div class="agent-notes-box">
+        <h3>📝 Notes from Your Agent</h3>
+        ${notes ? `<div class="note-row"><span class="ni">💬</span><div>${esc(notes)}</div></div>` : ''}
+        ${aro   ? `<div class="note-row"><span class="ni">🛡️</span><div><strong>Coverage Opportunity: </strong>${esc(aro)}</div></div>` : ''}
+        <div class="note-row"><span class="ni">📞</span><div>Questions? <strong>Call or text your agent directly</strong> — we'll walk you through any of these options before you decide.</div></div>
+      </div>`;
+  }
+  document.getElementById('pdf-notes').innerHTML = notesHTML;
+
+  // ── FOOTER ──
+  document.getElementById('pdf-footer-agent').innerHTML = `
+    <strong>${esc(agentName)}</strong>
+    ${agentPhone ? `<div>${esc(agentPhone)}</div>` : ''}
+    ${agentEmail ? `<div>${esc(agentEmail)}</div>` : ''}
+    <div style="color:var(--teal-500);font-weight:700;margin-top:4px;">your-policy.com</div>
+  `;
+
+  // ── SHOW PDF SCREEN ──
+  showScreen('pdf-screen');
+  window.scrollTo(0,0);
+}
+
+function buildThead(lowestIdx) {
+  const ths = carriers.map((c, i) => {
+    const isRec  = i === recIdx;
+    const isBest = i === lowestIdx && i !== recIdx;
+    const cls    = isRec ? 'carrier-th is-rec' : isBest ? 'carrier-th is-best' : 'carrier-th';
+    const badge  = isRec
+      ? `<span class="th-carrier-badge badge-rec-gold">★ Recommended</span>`
+      : isBest
+      ? `<span class="th-carrier-badge badge-best">Lowest Premium</span>`
+      : '';
+    return `<th class="${cls}"><span class="th-carrier-name">${esc(c.name||'Carrier')}</span>${badge}</th>`;
+  }).join('');
+  return `<thead><tr class="carrier-row"><th class="label-th">Coverage / Detail</th>${ths}</tr></thead>`;
+}
+
+function buildTbody(lowestIdx) {
+  let rows = '<tbody>';
+  SECTIONS.forEach(section => {
+    // Only render section if at least one carrier has a value in it
+    const hasAny = section.fields.some(f => carriers.some(c => c.fields[f.key]));
+    if (!hasAny) return;
+
+    rows += `<tr class="section-row"><td colspan="${carriers.length+1}">${section.label}</td></tr>`;
+
+    section.fields.forEach(f => {
+      const vals = carriers.map(c => c.fields[f.key] || '');
+      const anyVal = vals.some(v => v);
+      if (!anyVal) return;
+
+      // Best value for premium fields
+      let bestValIdx = -1;
+      if (f.isPremium) {
+        let low = Infinity;
+        vals.forEach((v, i) => {
+          const n = parseDollar(v);
+          if (n < low) { low = n; bestValIdx = i; }
+        });
+      }
+
+      const tds = vals.map((val, i) => {
+        const isBest = f.isPremium && i === bestValIdx && val;
+        const isEmpty = !val;
+        const cls = `val-td ${isBest?'best-val':''} ${isEmpty?'empty-val':''}`;
+        const badge = isBest ? `<span class="inline-badge">Best</span>` : '';
+        return `<td class="${cls}">${esc(val||'—')}${badge}</td>`;
+      }).join('');
+
+      const rowCls = f.isPremium ? 'data-row premium-row' : 'data-row';
+      rows += `
+        <tr class="${rowCls}">
+          <td class="label-td">${esc(f.label)}<span class="td-note">${f.note||''}</span></td>
+          ${tds}
+        </tr>`;
+    });
+  });
+  rows += '</tbody>';
+  return rows;
+}
+
+// ── SCREEN NAVIGATION ─────────────────────────────────
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function goBack() { showScreen('producer-screen'); }
+
+// ── HELPERS ───────────────────────────────────────────
+function v(id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; }
+
+function parseDollar(str) {
+  const n = parseFloat(String(str||'').replace(/[^0-9.]/g,''));
+  return isNaN(n) ? Infinity : n;
+}
+
+function calcSavings(current, quoted) {
+  const c = parseDollar(current);
+  const q = parseDollar(quoted);
+  if (c === Infinity || q === Infinity || q >= c) return '';
+  return `$${Math.round(c - q).toLocaleString()}/yr`;
+}
+
+function esc(str) {
+  return String(str||'')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function formatDate(str) {
+  if (!str) return '';
+  const d = new Date(str + 'T00:00:00');
+  return d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+}
+
+function today() {
+  return new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+}
+</script>
+</body>
+</html>
