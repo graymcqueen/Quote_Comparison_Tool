@@ -6,910 +6,693 @@
   <title>Quote Comparison | YourPolicy</title>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <style>
-    /* ─── TOKENS ─────────────────────────────────────── */
     :root {
-      --teal-900: #0d3d52;
-      --teal-700: #155870;
-      --teal-500: #1e7d9a;
-      --teal-300: #3ab6c7;
-      --teal-100: #e8f6f9;
-      --gold:     #d8b000;
-      --gold-lt:  #fdf6cc;
-      --green:    #1a8c5b;
-      --red:      #c0392b;
-      --bg:       #f0f5f8;
-      --surface:  #ffffff;
-      --border:   #d4e3ea;
-      --text:     #1a2e38;
-      --muted:    #5a7380;
-      --font:     'Nunito', system-ui, sans-serif;
-      --radius:   14px;
-      --shadow:   0 4px 24px rgba(13,61,82,0.09);
+      --teal-900:#0d3d52; --teal-700:#155870; --teal-500:#1e7d9a;
+      --teal-300:#3ab6c7; --teal-100:#e8f6f9;
+      --gold:#d8b000; --gold-lt:#fdf6cc;
+      --green:#1a8c5b; --red:#c0392b;
+      --bg:#f0f5f8; --surface:#fff; --border:#d4e3ea;
+      --text:#1a2e38; --muted:#5a7380;
+      --font:'Nunito',system-ui,sans-serif;
+      --radius:14px; --shadow:0 4px 24px rgba(13,61,82,.09);
     }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;}
+    input,select,textarea,button{font-family:var(--font);}
+    .screen{display:none;} .screen.active{display:block;}
 
-    /* ─── RESET ──────────────────────────────────────── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; -webkit-font-smoothing: antialiased; }
-    input, select, textarea, button { font-family: var(--font); }
+    /* HEADER */
+    .app-header{background:var(--teal-700);height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;box-shadow:0 2px 12px rgba(0,0,0,.18);position:sticky;top:0;z-index:100;}
+    .yp-logo{font-size:1.35rem;font-weight:900;color:#fff;letter-spacing:-.4px;}
+    .yp-logo em{color:var(--gold);font-style:normal;}
+    .header-sub{font-size:.72rem;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:rgba(255,255,255,.5);}
+    .header-actions{display:flex;gap:10px;align-items:center;}
 
-    /* ─── SCREENS ─────────────────────────────────────── */
-    .screen { display: none; }
-    .screen.active { display: block; }
+    /* PRODUCER WRAP */
+    .producer-wrap{max-width:980px;margin:0 auto;padding:32px 24px 80px;}
+    .page-eyebrow{font-size:.68rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--teal-500);margin-bottom:6px;}
+    .page-title{font-size:1.55rem;font-weight:900;color:var(--teal-700);margin-bottom:4px;}
+    .page-sub{font-size:.88rem;color:var(--muted);margin-bottom:28px;}
 
-    /* ─── SHARED HEADER ──────────────────────────────── */
-    .app-header {
-      background: var(--teal-700);
-      height: 62px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 28px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.18);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-    .yp-logo { font-size: 1.35rem; font-weight: 900; color: #fff; letter-spacing: -0.4px; }
-    .yp-logo em { color: var(--gold); font-style: normal; }
-    .header-sub { font-size: 0.72rem; font-weight: 700; letter-spacing: 1.6px; text-transform: uppercase; color: rgba(255,255,255,0.5); }
+    /* CARDS */
+    .card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius);padding:22px 26px;margin-bottom:18px;box-shadow:var(--shadow);}
+    .card-title{font-size:.85rem;font-weight:900;color:var(--teal-700);text-transform:uppercase;letter-spacing:.8px;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
 
-    /* ─── PRODUCER SCREEN ────────────────────────────── */
-    .producer-wrap { max-width: 960px; margin: 0 auto; padding: 36px 24px 80px; }
+    /* FORM */
+    .form-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:13px;}
+    label.fl{display:block;font-size:.67rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+    input[type=text],input[type=date],input[type=email],input[type=tel],select,textarea{width:100%;padding:9px 12px;font-size:.88rem;font-weight:600;border:1.5px solid var(--border);border-radius:9px;color:var(--text);background:#fff;outline:none;transition:border-color .15s;}
+    input:focus,select:focus,textarea:focus{border-color:var(--teal-500);}
+    textarea{resize:vertical;min-height:68px;}
+    select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235a7380' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;}
 
-    .page-eyebrow {
-      font-size: 0.68rem; font-weight: 800; letter-spacing: 2px;
-      text-transform: uppercase; color: var(--teal-500); margin-bottom: 6px;
-    }
-    .page-title { font-size: 1.6rem; font-weight: 900; color: var(--teal-700); margin-bottom: 4px; }
-    .page-sub { font-size: 0.88rem; color: var(--muted); margin-bottom: 32px; }
+    /* STEP INDICATOR */
+    .steps{display:flex;gap:0;margin-bottom:28px;}
+    .step{flex:1;display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:0;background:#fff;border:1.5px solid var(--border);border-right:none;font-size:.8rem;font-weight:700;color:var(--muted);cursor:default;}
+    .step:first-child{border-radius:10px 0 0 10px;}
+    .step:last-child{border-radius:0 10px 10px 0;border-right:1.5px solid var(--border);}
+    .step.active{background:var(--teal-700);border-color:var(--teal-700);color:#fff;}
+    .step.done{background:var(--teal-100);border-color:var(--teal-300);color:var(--teal-700);}
+    .step-num{width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:900;flex-shrink:0;}
+    .step.active .step-num{background:rgba(255,255,255,.25);}
+    .step.done .step-num{background:var(--teal-300);color:#fff;}
 
-    /* Cards */
-    .card {
-      background: var(--surface);
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius);
-      padding: 24px 28px;
-      margin-bottom: 20px;
-      box-shadow: var(--shadow);
-    }
-    .card-title {
-      font-size: 0.9rem; font-weight: 800; color: var(--teal-700);
-      text-transform: uppercase; letter-spacing: 0.8px;
-      margin-bottom: 18px; display: flex; align-items: center; gap: 8px;
-    }
-    .card-title span { font-size: 1rem; }
+    /* CARRIER BLOCK */
+    .carrier-block{background:#f7fbfd;border:1.5px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:14px;transition:border-color .2s;}
+    .carrier-block.is-rec{border-color:var(--gold);background:#fffdf0;}
+    .carrier-block-header{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
+    .carrier-name-display{font-size:1rem;font-weight:900;color:var(--teal-700);flex:1;}
 
-    /* Form grid */
-    .form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px,1fr)); gap: 14px; }
-    .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    /* PASTE ZONE */
+    .paste-zone{position:relative;}
+    .paste-zone textarea{min-height:90px;font-family:'Courier New',monospace;font-size:.76rem;line-height:1.55;color:var(--muted);background:#f0f8fc;border-style:dashed;}
+    .paste-zone textarea:focus{background:#fff;border-style:solid;}
+    .paste-zone textarea::placeholder{color:#aabbc4;}
+    .parse-btn{position:absolute;bottom:10px;right:10px;padding:6px 14px;background:var(--teal-700);color:#fff;border:none;border-radius:7px;font-size:.75rem;font-weight:800;cursor:pointer;transition:background .15s;}
+    .parse-btn:hover{background:var(--teal-500);}
+    .parse-status{font-size:.73rem;margin-top:6px;min-height:18px;font-weight:700;}
+    .parse-status.ok{color:var(--green);}
+    .parse-status.none{color:var(--muted);}
+    .parse-status.err{color:var(--red);}
 
-    label.field-label {
-      display: block; font-size: 0.68rem; font-weight: 800;
-      letter-spacing: 1px; text-transform: uppercase;
-      color: var(--muted); margin-bottom: 5px;
-    }
-    input[type=text], input[type=date], input[type=email], input[type=tel], select, textarea {
-      width: 100%; padding: 9px 13px; font-size: 0.88rem; font-weight: 600;
-      border: 1.5px solid var(--border); border-radius: 9px;
-      color: var(--text); background: #fff; outline: none;
-      transition: border-color 0.15s;
-    }
-    input:focus, select:focus, textarea:focus { border-color: var(--teal-500); }
-    textarea { resize: vertical; min-height: 72px; }
-    select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235a7380' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+    /* PARSED FIELDS GRID */
+    .fields-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:9px;margin-top:14px;}
+    .field-item label.fl{font-size:.62rem;}
+    .field-item input{font-size:.84rem;padding:7px 10px;}
 
-    /* Carrier input block */
-    .carrier-block {
-      background: #f7fbfd;
-      border: 1.5px solid var(--border);
-      border-radius: 12px;
-      padding: 20px 22px;
-      margin-bottom: 14px;
-      position: relative;
-    }
-    .carrier-block-header {
-      display: flex; align-items: center; gap: 12px;
-      margin-bottom: 18px; flex-wrap: wrap;
-    }
-    .carrier-select-wrap { display: flex; gap: 10px; flex: 1; min-width: 200px; flex-wrap: wrap; }
+    /* TOGGLE ROW */
+    .toggle-row{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+    .rec-pill{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);background:#fff;font-size:.78rem;font-weight:800;color:var(--muted);cursor:pointer;transition:all .15s;user-select:none;}
+    .rec-pill.active{background:var(--gold-lt);border-color:var(--gold);color:#5a3e00;}
+    .mode-pill{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);background:#fff;font-size:.75rem;font-weight:700;color:var(--muted);cursor:pointer;transition:all .15s;user-select:none;}
+    .mode-pill.active{background:var(--teal-100);border-color:var(--teal-300);color:var(--teal-700);}
+    .remove-btn{margin-left:auto;background:none;border:1.5px solid #e0b0b0;color:var(--red);border-radius:8px;padding:5px 12px;font-size:.75rem;font-weight:700;cursor:pointer;transition:all .15s;}
+    .remove-btn:hover{background:var(--red);color:#fff;border-color:var(--red);}
 
-    .rec-toggle {
-      display: flex; align-items: center; gap: 7px;
-      font-size: 0.8rem; font-weight: 800; color: var(--teal-700);
-      cursor: pointer; white-space: nowrap;
-      background: var(--teal-100); border: 1.5px solid var(--border);
-      padding: 7px 14px; border-radius: 8px; transition: all 0.15s;
-      user-select: none;
-    }
-    .rec-toggle.active { background: var(--gold-lt); border-color: var(--gold); color: #5a3e00; }
-    .rec-toggle input { display: none; }
+    /* SECTION DIVIDER */
+    .sec-label{font-size:.62rem;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal-500);margin:14px 0 8px;border-bottom:1px solid var(--border);padding-bottom:5px;}
 
-    .remove-btn {
-      background: none; border: 1.5px solid #e0b0b0; color: var(--red);
-      border-radius: 8px; padding: 7px 13px; font-size: 0.78rem; font-weight: 700;
-      cursor: pointer; transition: all 0.15s; white-space: nowrap;
-    }
-    .remove-btn:hover { background: var(--red); color: #fff; border-color: var(--red); }
+    /* BUTTONS */
+    .btn{display:inline-flex;align-items:center;gap:7px;padding:11px 22px;border-radius:9px;font-size:.88rem;font-weight:800;cursor:pointer;border:none;transition:all .15s;}
+    .btn-primary{background:var(--teal-700);color:#fff;} .btn-primary:hover{background:var(--teal-500);}
+    .btn-outline{background:#fff;color:var(--teal-700);border:1.5px solid var(--teal-700);} .btn-outline:hover{background:var(--teal-700);color:#fff;}
+    .btn-gold{background:var(--gold);color:#3a2e00;} .btn-gold:hover{background:#c9a300;}
+    .btn-ghost{background:transparent;color:rgba(255,255,255,.7);border:1.5px solid rgba(255,255,255,.3);font-size:.8rem;padding:7px 16px;} .btn-ghost:hover{color:#fff;border-color:rgba(255,255,255,.7);}
+    .btn-sm{padding:8px 16px;font-size:.8rem;}
+    .action-bar{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px;}
 
-    .coverage-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(175px,1fr));
-      gap: 10px;
-    }
-    .coverage-field label.field-label { margin-bottom: 4px; }
+    /* TOAST */
+    .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(60px);background:var(--teal-900);color:#fff;padding:12px 22px;border-radius:10px;font-size:.84rem;font-weight:700;opacity:0;transition:all .3s;z-index:999;pointer-events:none;white-space:nowrap;}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
-    /* Section divider */
-    .section-divider { height: 1px; background: var(--border); margin: 8px 0 20px; }
+    /* PDF SCREEN */
+    #pdf-screen{background:#fff;min-height:100vh;}
+    .pdf-toolbar{background:var(--teal-900);padding:11px 28px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+    .pdf-doc{max-width:900px;margin:0 auto;padding:0 0 60px;}
 
-    /* Buttons */
-    .btn { display: inline-flex; align-items: center; gap: 7px; padding: 11px 22px; border-radius: 9px; font-size: 0.88rem; font-weight: 800; cursor: pointer; border: none; transition: all 0.15s; letter-spacing: 0.2px; }
-    .btn-primary { background: var(--teal-700); color: #fff; }
-    .btn-primary:hover { background: var(--teal-500); }
-    .btn-outline { background: #fff; color: var(--teal-700); border: 1.5px solid var(--teal-700); }
-    .btn-outline:hover { background: var(--teal-700); color: #fff; }
-    .btn-gold { background: var(--gold); color: #3a2e00; }
-    .btn-gold:hover { background: #c9a300; }
-    .btn-sm { padding: 8px 16px; font-size: 0.8rem; }
+    /* PDF HEADER */
+    .pdf-hdr{background:linear-gradient(135deg,var(--teal-700) 0%,var(--teal-500) 100%);padding:36px 48px 30px;position:relative;overflow:hidden;}
+    .pdf-hdr::before{content:'';position:absolute;right:-40px;top:-40px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.05);}
+    .pdf-logo{font-size:1.45rem;font-weight:900;color:#fff;} .pdf-logo em{color:var(--gold);font-style:normal;}
+    .pdf-logo-sub{font-size:.7rem;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:20px;}
+    .pdf-hed{font-size:1.7rem;font-weight:900;color:#fff;line-height:1.2;margin-bottom:8px;}
+    .pdf-tag{font-size:.88rem;color:rgba(255,255,255,.75);max-width:480px;line-height:1.6;}
+    .pdf-meta{background:rgba(0,0,0,.17);border-radius:10px;padding:13px 18px;margin-top:22px;display:flex;gap:24px;flex-wrap:wrap;}
+    .pdf-meta-item label{display:block;font-size:.6rem;font-weight:800;letter-spacing:1.3px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:2px;}
+    .pdf-meta-item span{font-size:.86rem;font-weight:700;color:#fff;}
 
-    .action-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 24px; }
+    /* PDF BODY */
+    .pdf-body{padding:34px 48px;}
+    .pdf-sec-hed{margin-bottom:14px;}
+    .pdf-sec-hed .ey{font-size:.62rem;font-weight:800;letter-spacing:1.8px;text-transform:uppercase;color:var(--teal-300);display:block;margin-bottom:2px;}
+    .pdf-sec-hed h2{font-size:1rem;font-weight:900;color:var(--teal-700);}
 
-    /* ─── PDF / CLIENT OUTPUT SCREEN ────────────────── */
-    #pdf-screen {
-      background: #fff;
-      min-height: 100vh;
-    }
+    /* REC BANNER */
+    .rec-banner{background:linear-gradient(135deg,#e8f7f0,#f0fdf8);border:2px solid #a8dfc5;border-radius:12px;padding:20px 24px;margin-bottom:28px;display:flex;gap:16px;align-items:flex-start;}
+    .rec-icon{width:44px;height:44px;flex-shrink:0;background:var(--teal-700);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;}
+    .rec-banner h3{font-size:1rem;font-weight:900;color:var(--teal-700);margin-bottom:3px;}
+    .rec-banner p{font-size:.81rem;color:var(--muted);line-height:1.55;}
+    .rec-stats{display:flex;gap:12px;margin-top:12px;flex-wrap:wrap;}
+    .rec-stat{background:#fff;border:1.5px solid var(--border);border-radius:9px;padding:9px 14px;}
+    .rec-stat .rl{font-size:.6rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:2px;}
+    .rec-stat .rv{font-size:.98rem;font-weight:900;color:var(--teal-700);}
+    .rec-stat .rv.green{color:var(--green);} .rec-stat .rv.gold{color:#a07800;}
 
-    /* PDF toolbar (hidden on print) */
-    .pdf-toolbar {
-      background: var(--teal-900);
-      padding: 12px 28px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-    .pdf-toolbar .toolbar-label { font-size: 0.8rem; font-weight: 700; color: rgba(255,255,255,0.65); margin-right: 4px; }
+    /* TABLE */
+    .tbl-wrap{overflow-x:auto;border-radius:12px;border:1.5px solid var(--border);box-shadow:var(--shadow);margin-bottom:28px;}
+    table.cmp{width:100%;border-collapse:collapse;min-width:500px;}
+    table.cmp thead tr.chr th{padding:13px 16px;font-size:.8rem;font-weight:900;border-bottom:3px solid var(--border);text-align:center;white-space:nowrap;}
+    table.cmp thead tr.chr th.lth{background:#eaf3f7;text-align:left;font-size:.68rem;letter-spacing:1px;text-transform:uppercase;color:var(--muted);font-weight:800;width:210px;}
+    table.cmp thead tr.chr th.cth{background:var(--teal-700);color:#fff;border-left:1px solid rgba(255,255,255,.1);}
+    table.cmp thead tr.chr th.cth.is-rec{background:var(--gold);color:#3a2e00;}
+    table.cmp thead tr.chr th.cth.is-best{background:var(--teal-900);color:#fff;}
+    .th-name{font-size:.9rem;font-weight:900;display:block;}
+    .th-badge{display:inline-block;margin-top:4px;font-size:.58rem;font-weight:900;letter-spacing:.8px;text-transform:uppercase;padding:2px 7px;border-radius:20px;}
+    .tb-rec{background:rgba(58,46,0,.12);color:#3a2e00;} .tb-best{background:rgba(255,255,255,.15);color:rgba(255,255,255,.9);}
+    table.cmp tr.sr td{background:#f0f7fa;padding:6px 16px;font-size:.62rem;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal-500);border-top:2px solid var(--border);border-bottom:1px solid var(--border);}
+    table.cmp tbody tr.dr td{padding:10px 16px;font-size:.84rem;border-bottom:1px solid #edf3f6;vertical-align:middle;}
+    table.cmp tbody tr.dr td.ltd{font-weight:700;color:var(--text);background:#f9fcfd;white-space:nowrap;}
+    table.cmp tbody tr.dr td.ltd .tn{display:block;font-size:.66rem;font-weight:400;color:var(--muted);margin-top:1px;}
+    table.cmp tbody tr.dr td.vtd{text-align:center;font-weight:600;color:var(--text);border-left:1px solid #edf3f6;}
+    table.cmp tbody tr.dr td.vtd.bv{color:var(--green);font-weight:900;}
+    table.cmp tbody tr.dr td.vtd.ev{color:#ccc;font-weight:400;}
+    table.cmp tbody tr.pr td{background:#e8f4f8!important;font-size:.98rem;font-weight:900;border-top:2px solid var(--border);border-bottom:2px solid var(--border);}
+    table.cmp tbody tr.pr td.vtd{border-left:1px solid #c8dde6;} table.cmp tbody tr.pr td.vtd.bv{color:var(--green);}
+    .ibadge{display:inline-block;font-size:.56rem;font-weight:900;letter-spacing:.8px;text-transform:uppercase;padding:1px 6px;border-radius:20px;margin-left:4px;vertical-align:middle;background:var(--gold);color:#3a2e00;}
 
-    /* PDF Document */
-    .pdf-doc {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 0 0 60px;
-    }
+    /* NOTES BOX */
+    .notes-box{background:#f7fbfd;border:1.5px solid var(--border);border-radius:12px;padding:18px 22px;margin-bottom:24px;}
+    .notes-box h3{font-size:.86rem;font-weight:900;color:var(--teal-700);margin-bottom:12px;display:flex;align-items:center;gap:7px;}
+    .nr{display:flex;gap:11px;padding:9px 0;border-bottom:1px solid var(--border);font-size:.82rem;line-height:1.6;}
+    .nr:last-child{border-bottom:none;} .ni{font-size:.95rem;flex-shrink:0;margin-top:1px;}
+    .nr strong{color:var(--teal-700);}
 
-    /* PDF Header */
-    .pdf-header {
-      background: linear-gradient(135deg, var(--teal-700) 0%, var(--teal-500) 100%);
-      padding: 36px 48px 32px;
-      position: relative;
-      overflow: hidden;
-    }
-    .pdf-header::before {
-      content: '';
-      position: absolute;
-      right: -40px; top: -40px;
-      width: 220px; height: 220px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.05);
-    }
-    .pdf-header::after {
-      content: '';
-      position: absolute;
-      right: 60px; bottom: -60px;
-      width: 150px; height: 150px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.04);
-    }
-    .pdf-logo { font-size: 1.5rem; font-weight: 900; color: #fff; letter-spacing: -0.3px; margin-bottom: 2px; }
-    .pdf-logo em { color: var(--gold); font-style: normal; }
-    .pdf-logo-sub { font-size: 0.72rem; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 22px; }
-    .pdf-headline { font-size: 1.7rem; font-weight: 900; color: #fff; line-height: 1.2; margin-bottom: 8px; }
-    .pdf-tagline { font-size: 0.88rem; color: rgba(255,255,255,0.75); max-width: 480px; line-height: 1.6; }
+    /* COV STANDARD */
+    .cov-std{background:#edf9f4;border:1.5px solid #b2ddc9;border-radius:10px;padding:13px 17px;font-size:.79rem;color:#1a4030;line-height:1.6;margin-bottom:24px;}
+    .cov-std strong{color:var(--teal-700);display:block;margin-bottom:2px;}
 
-    /* Client meta strip */
-    .pdf-meta-strip {
-      background: rgba(0,0,0,0.18);
-      border-radius: 10px;
-      padding: 14px 20px;
-      margin-top: 24px;
-      display: flex;
-      gap: 28px;
-      flex-wrap: wrap;
-    }
-    .pdf-meta-item label {
-      display: block; font-size: 0.62rem; font-weight: 800;
-      letter-spacing: 1.3px; text-transform: uppercase;
-      color: rgba(255,255,255,0.45); margin-bottom: 3px;
-    }
-    .pdf-meta-item span { font-size: 0.88rem; font-weight: 700; color: #fff; }
+    /* PDF FOOTER */
+    .pdf-ftr{border-top:2px solid var(--border);padding:22px 48px;display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap;}
+    .ftr-logo{font-size:1.05rem;font-weight:900;color:var(--teal-700);} .ftr-logo em{color:var(--gold);font-style:normal;}
+    .ftr-legal{font-size:.67rem;color:var(--muted);max-width:460px;line-height:1.6;margin-top:5px;}
+    .ftr-agent{text-align:right;font-size:.79rem;color:var(--muted);}
+    .ftr-agent strong{display:block;font-size:.88rem;color:var(--teal-700);font-weight:800;margin-bottom:2px;}
 
-    /* PDF Body */
-    .pdf-body { padding: 36px 48px; }
-
-    /* Recommendation banner */
-    .rec-banner {
-      background: linear-gradient(135deg, #e8f7f0 0%, #f0fdf8 100%);
-      border: 2px solid #a8dfc5;
-      border-radius: 12px;
-      padding: 22px 26px;
-      margin-bottom: 32px;
-      display: flex;
-      gap: 18px;
-      align-items: flex-start;
+    /* PRINT */
+    @media print{
+      .no-print,.pdf-toolbar,.app-header{display:none!important;}
+      body{background:#fff;}
+      .pdf-doc{max-width:100%;}
+      .pdf-hdr{print-color-adjust:exact;-webkit-print-color-adjust:exact;}
+      table.cmp thead tr.chr th.cth{print-color-adjust:exact;-webkit-print-color-adjust:exact;}
+      .rec-banner{print-color-adjust:exact;-webkit-print-color-adjust:exact;break-inside:avoid;}
+      .tbl-wrap{box-shadow:none;}
     }
-    .rec-banner-icon {
-      width: 46px; height: 46px; flex-shrink: 0;
-      background: var(--teal-700);
-      border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.3rem;
-    }
-    .rec-banner h3 { font-size: 1.05rem; font-weight: 900; color: var(--teal-700); margin-bottom: 4px; }
-    .rec-banner p { font-size: 0.82rem; color: var(--muted); line-height: 1.55; }
-    .rec-banner-stats { display: flex; gap: 16px; margin-top: 14px; flex-wrap: wrap; }
-    .rec-stat { background: #fff; border: 1.5px solid var(--border); border-radius: 9px; padding: 10px 16px; }
-    .rec-stat .rs-label { font-size: 0.62rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 3px; }
-    .rec-stat .rs-val { font-size: 1rem; font-weight: 900; color: var(--teal-700); }
-    .rec-stat .rs-val.green { color: var(--green); }
-    .rec-stat .rs-val.gold { color: #a07800; }
-
-    /* Section heading */
-    .pdf-section-head {
-      display: flex; align-items: center; gap: 10px;
-      margin-bottom: 16px;
-    }
-    .pdf-section-head h2 { font-size: 1rem; font-weight: 900; color: var(--teal-700); }
-    .pdf-section-head .eyebrow {
-      font-size: 0.62rem; font-weight: 800; letter-spacing: 1.8px;
-      text-transform: uppercase; color: var(--teal-300);
-      display: block; margin-bottom: 2px;
-    }
-
-    /* ─── COMPARISON TABLE ───────────────────────────── */
-    .cmp-table-wrap { overflow-x: auto; margin-bottom: 32px; border-radius: 12px; border: 1.5px solid var(--border); box-shadow: var(--shadow); }
-
-    table.cmp {
-      width: 100%; border-collapse: collapse; min-width: 500px;
-    }
-
-    /* Carrier header row */
-    table.cmp thead tr.carrier-row th {
-      padding: 14px 18px; font-size: 0.82rem; font-weight: 900;
-      border-bottom: 3px solid var(--border); text-align: center; white-space: nowrap;
-    }
-    table.cmp thead tr.carrier-row th.label-th {
-      background: #eaf3f7; text-align: left;
-      font-size: 0.7rem; letter-spacing: 1px; text-transform: uppercase;
-      color: var(--muted); font-weight: 800; width: 220px;
-    }
-    table.cmp thead tr.carrier-row th.carrier-th {
-      background: var(--teal-700); color: #fff;
-      border-left: 1px solid rgba(255,255,255,0.1);
-    }
-    table.cmp thead tr.carrier-row th.carrier-th.is-rec {
-      background: var(--gold); color: #3a2e00;
-    }
-    table.cmp thead tr.carrier-row th.carrier-th.is-best {
-      background: var(--teal-900); color: #fff;
-    }
-    .th-carrier-name { font-size: 0.92rem; font-weight: 900; display: block; }
-    .th-carrier-badge {
-      display: inline-block; margin-top: 5px;
-      font-size: 0.6rem; font-weight: 900; letter-spacing: 1px;
-      text-transform: uppercase; padding: 2px 8px; border-radius: 20px;
-    }
-    .badge-rec { background: rgba(255,255,255,0.25); color: #fff; }
-    .badge-rec-gold { background: rgba(58,46,0,0.15); color: #3a2e00; }
-    .badge-best { background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.9); }
-
-    /* Section sub-header row */
-    table.cmp tr.section-row td {
-      background: #f0f7fa;
-      padding: 7px 18px;
-      font-size: 0.65rem; font-weight: 900; letter-spacing: 1.5px;
-      text-transform: uppercase; color: var(--teal-500);
-      border-top: 2px solid var(--border);
-      border-bottom: 1px solid var(--border);
-    }
-
-    /* Data rows */
-    table.cmp tbody tr.data-row td {
-      padding: 11px 18px; font-size: 0.85rem;
-      border-bottom: 1px solid #edf3f6; vertical-align: middle;
-    }
-    table.cmp tbody tr.data-row:last-of-type td { border-bottom: none; }
-    table.cmp tbody tr.data-row td.label-td {
-      font-weight: 700; color: var(--text);
-      background: #f9fcfd; white-space: nowrap;
-    }
-    table.cmp tbody tr.data-row td.label-td .td-note {
-      display: block; font-size: 0.68rem; font-weight: 400; color: var(--muted); margin-top: 1px;
-    }
-    table.cmp tbody tr.data-row td.val-td {
-      text-align: center; font-weight: 600; color: var(--text);
-      border-left: 1px solid #edf3f6;
-    }
-    table.cmp tbody tr.data-row td.val-td.best-val { color: var(--green); font-weight: 900; }
-    table.cmp tbody tr.data-row td.val-td.empty-val { color: #ccc; font-weight: 400; }
-
-    /* Premium highlight row */
-    table.cmp tbody tr.premium-row td {
-      background: #e8f4f8 !important;
-      font-size: 1rem; font-weight: 900;
-      border-top: 2px solid var(--border);
-      border-bottom: 2px solid var(--border);
-    }
-    table.cmp tbody tr.premium-row td.val-td.best-val { color: var(--green); }
-    table.cmp tbody tr.premium-row td.val-td { border-left: 1px solid #c8dde6; }
-
-    .inline-badge {
-      display: inline-block; font-size: 0.58rem; font-weight: 900;
-      letter-spacing: 0.8px; text-transform: uppercase;
-      padding: 1px 6px; border-radius: 20px;
-      margin-left: 5px; vertical-align: middle;
-      background: var(--gold); color: #3a2e00;
-    }
-
-    /* Agent notes */
-    .agent-notes-box {
-      background: #f7fbfd;
-      border: 1.5px solid var(--border);
-      border-radius: 12px;
-      padding: 20px 24px;
-      margin-bottom: 28px;
-    }
-    .agent-notes-box h3 {
-      font-size: 0.88rem; font-weight: 900; color: var(--teal-700);
-      margin-bottom: 14px; display: flex; align-items: center; gap: 7px;
-    }
-    .note-row {
-      display: flex; gap: 12px; padding: 10px 0;
-      border-bottom: 1px solid var(--border); font-size: 0.83rem; line-height: 1.6;
-    }
-    .note-row:last-child { border-bottom: none; }
-    .note-row .ni { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
-    .note-row strong { color: var(--teal-700); }
-
-    /* Coverage standards footer note */
-    .coverage-standard {
-      background: #edf9f4; border: 1.5px solid #b2ddc9;
-      border-radius: 10px; padding: 14px 18px;
-      font-size: 0.8rem; color: #1a4030; line-height: 1.6;
-      margin-bottom: 28px;
-    }
-    .coverage-standard strong { color: var(--teal-700); display: block; margin-bottom: 3px; }
-
-    /* PDF Footer */
-    .pdf-footer {
-      border-top: 2px solid var(--border);
-      padding: 24px 48px;
-      display: flex; justify-content: space-between;
-      align-items: flex-start; gap: 20px; flex-wrap: wrap;
-    }
-    .pdf-footer-logo { font-size: 1.1rem; font-weight: 900; color: var(--teal-700); }
-    .pdf-footer-logo em { color: var(--gold); font-style: normal; }
-    .pdf-footer-legal { font-size: 0.68rem; color: var(--muted); max-width: 480px; line-height: 1.6; margin-top: 6px; }
-    .pdf-footer-agent { text-align: right; font-size: 0.8rem; color: var(--muted); }
-    .pdf-footer-agent strong { display: block; font-size: 0.9rem; color: var(--teal-700); font-weight: 800; margin-bottom: 3px; }
-
-    /* ─── PRINT RULES ────────────────────────────────── */
-    @media print {
-      .no-print { display: none !important; }
-      .pdf-toolbar { display: none !important; }
-      .app-header { display: none !important; }
-      body { background: #fff; }
-      .pdf-doc { max-width: 100%; }
-      .pdf-header { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
-      .cmp-table-wrap { box-shadow: none; }
-      table.cmp thead tr.carrier-row th.carrier-th { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
-      table.cmp thead tr.carrier-row th.carrier-th.is-rec { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
-      .rec-banner { print-color-adjust: exact; -webkit-print-color-adjust: exact; break-inside: avoid; }
-      table.cmp { break-inside: auto; }
-      table.cmp tr { break-inside: avoid; }
-    }
-
-    /* ─── RESPONSIVE ─────────────────────────────────── */
-    @media (max-width: 640px) {
-      .pdf-header { padding: 24px 20px 20px; }
-      .pdf-body { padding: 20px 16px; }
-      .pdf-footer { padding: 20px 16px; flex-direction: column; }
-      .pdf-footer-agent { text-align: left; }
-      .producer-wrap { padding: 20px 14px 60px; }
-      .card { padding: 18px 16px; }
-      .coverage-grid { grid-template-columns: 1fr 1fr; }
-      .form-grid-2 { grid-template-columns: 1fr; }
+    @media(max-width:640px){
+      .pdf-hdr,.pdf-body,.pdf-ftr{padding-left:18px;padding-right:18px;}
+      .producer-wrap{padding:18px 14px 60px;}
+      .steps{flex-direction:column;}
+      .step{border-radius:8px!important;border:1.5px solid var(--border)!important;margin-bottom:4px;}
+      .fields-grid{grid-template-columns:1fr 1fr;}
     }
   </style>
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════════════════
-     SHARED HEADER
-════════════════════════════════════════════════════ -->
 <header class="app-header">
   <div class="yp-logo">Your<em>Policy</em></div>
-  <div class="header-sub">Quote Comparison Tool</div>
+  <div class="header-sub no-print">Quote Comparison Tool</div>
+  <div class="header-actions no-print" id="hdr-actions"></div>
 </header>
 
-<!-- ═══════════════════════════════════════════════════
+<div class="toast" id="toast"></div>
+
+<!-- ══════════════════════════════════════════
      SCREEN 1 — PRODUCER INPUT
-════════════════════════════════════════════════════ -->
+══════════════════════════════════════════ -->
 <div id="producer-screen" class="screen active">
-  <div class="producer-wrap">
+<div class="producer-wrap">
 
-    <div class="page-eyebrow">Producer Dashboard</div>
-    <div class="page-title">Build a Quote Comparison</div>
-    <div class="page-sub">Enter client details and carrier quotes below. When complete, generate the branded client PDF.</div>
+  <div class="page-eyebrow">Producer Tool</div>
+  <div class="page-title">Quote Comparison Builder</div>
+  <div class="page-sub">Paste raw quote text from any carrier portal — coverages fill automatically. Manual entry also available.</div>
 
-    <!-- Client Info -->
+  <!-- STEP INDICATOR -->
+  <div class="steps no-print">
+    <div class="step active" id="step1"><div class="step-num">1</div>Client & Agent</div>
+    <div class="step" id="step2"><div class="step-num">2</div>Carrier Quotes</div>
+    <div class="step" id="step3"><div class="step-num">3</div>Notes & Generate</div>
+  </div>
+
+  <!-- STEP 1: CLIENT + AGENT -->
+  <div id="panel-1">
     <div class="card">
-      <div class="card-title"><span>👤</span> Client Information</div>
+      <div class="card-title">👤 Client Information</div>
       <div class="form-grid">
-        <div>
-          <label class="field-label">Client Full Name</label>
-          <input type="text" id="f-client" placeholder="e.g. John & Sarah Smith">
-        </div>
-        <div>
-          <label class="field-label">Policy Type</label>
-          <select id="f-policy-type">
+        <div><label class="fl">Client Full Name</label><input type="text" id="f-client" placeholder="e.g. John & Sarah Smith"></div>
+        <div><label class="fl">Policy Type</label>
+          <select id="f-ptype">
             <option value="">Select...</option>
-            <option>Auto</option>
-            <option>Home</option>
-            <option>Auto + Home</option>
-            <option>Auto + Renters</option>
-            <option>Umbrella</option>
-            <option>Multi-Policy Bundle</option>
+            <option>Auto</option><option>Home</option><option>Auto + Home</option>
+            <option>Auto + Renters</option><option>Umbrella</option><option>Multi-Policy Bundle</option>
           </select>
         </div>
-        <div>
-          <label class="field-label">Effective Date</label>
-          <input type="date" id="f-eff-date">
-        </div>
-        <div>
-          <label class="field-label">Current Carrier</label>
-          <input type="text" id="f-current-carrier" placeholder="e.g. Allstate">
-        </div>
-        <div>
-          <label class="field-label">Current Annual Premium</label>
-          <input type="text" id="f-current-premium" placeholder="e.g. $2,400">
-        </div>
+        <div><label class="fl">Effective Date</label><input type="date" id="f-eff"></div>
+        <div><label class="fl">Current Carrier</label><input type="text" id="f-cur-carrier" placeholder="e.g. Allstate"></div>
+        <div><label class="fl">Current Annual Premium</label><input type="text" id="f-cur-prem" placeholder="e.g. $2,400"></div>
       </div>
     </div>
-
-    <!-- Agent Info -->
     <div class="card">
-      <div class="card-title"><span>🏢</span> Agent Information</div>
+      <div class="card-title">🏢 Agent Information</div>
       <div class="form-grid">
-        <div>
-          <label class="field-label">Agent Name</label>
-          <input type="text" id="f-agent" placeholder="Your full name">
-        </div>
-        <div>
-          <label class="field-label">Agent Phone</label>
-          <input type="tel" id="f-phone" placeholder="(555) 555-5555">
-        </div>
-        <div>
-          <label class="field-label">Agent Email</label>
-          <input type="email" id="f-email" placeholder="you@your-policy.com">
-        </div>
+        <div><label class="fl">Agent Name</label><input type="text" id="f-agent" placeholder="Your full name"></div>
+        <div><label class="fl">Agent Phone</label><input type="tel" id="f-phone" placeholder="(555) 555-5555"></div>
+        <div><label class="fl">Agent Email</label><input type="email" id="f-email" placeholder="you@your-policy.com"></div>
       </div>
     </div>
+    <div class="action-bar">
+      <button class="btn btn-primary" onclick="goStep(2)">Next: Enter Quotes →</button>
+    </div>
+  </div>
 
-    <!-- Carrier Quotes -->
+  <!-- STEP 2: CARRIER QUOTES -->
+  <div id="panel-2" style="display:none;">
     <div class="card">
-      <div class="card-title"><span>📋</span> Carrier Quotes</div>
-      <p style="font-size:0.82rem;color:var(--muted);margin-bottom:20px;">Add each carrier you've quoted. Fill in every available coverage field. Mark your recommendation with ★.</p>
+      <div class="card-title">📋 Carrier Quotes</div>
+      <p style="font-size:.82rem;color:var(--muted);margin-bottom:18px;">
+        <strong>Fastest way:</strong> paste the raw text from a carrier portal into the paste box and click <em>Parse Quote</em> — coverages fill automatically in seconds. Switch to Manual Entry if needed.
+      </p>
       <div id="carrier-blocks"></div>
       <button class="btn btn-outline btn-sm" onclick="addCarrier()">+ Add Carrier</button>
     </div>
+    <div class="action-bar">
+      <button class="btn btn-outline" onclick="goStep(1)">← Back</button>
+      <button class="btn btn-primary" onclick="goStep(3)">Next: Notes & Generate →</button>
+    </div>
+  </div>
 
-    <!-- Notes -->
+  <!-- STEP 3: NOTES + GENERATE -->
+  <div id="panel-3" style="display:none;">
     <div class="card">
-      <div class="card-title"><span>📝</span> Agent Notes</div>
+      <div class="card-title">📝 Agent Notes</div>
       <div style="margin-bottom:14px;">
-        <label class="field-label">Recommendation Summary</label>
-        <textarea id="f-notes" placeholder="Why are you recommending this carrier? What coverage improvements are included? Mention any rate changes that triggered the remarket."></textarea>
+        <label class="fl">Recommendation Summary</label>
+        <textarea id="f-notes" placeholder="Why are you recommending this carrier? Include rate change context, coverage improvements, or any relevant underwriting notes."></textarea>
       </div>
       <div>
-        <label class="field-label">Coverage Gap / ARO Opportunity</label>
-        <textarea id="f-aro" placeholder="e.g. Client currently has no umbrella. With their home value and auto limits, umbrella is strongly recommended. Cross-sell opportunity flagged."></textarea>
+        <label class="fl">Coverage Gap / ARO Opportunity</label>
+        <textarea id="f-aro" placeholder="e.g. No umbrella in place. With home value and auto limits, umbrella strongly recommended. Cross-sell opportunity flagged."></textarea>
       </div>
     </div>
-
     <div class="action-bar">
+      <button class="btn btn-outline" onclick="goStep(2)">← Back</button>
       <button class="btn btn-primary" onclick="generatePDF()">⚡ Generate Client Comparison</button>
     </div>
-
   </div>
+
+</div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════
-     SCREEN 2 — CLIENT PDF OUTPUT
-════════════════════════════════════════════════════ -->
+<!-- ══════════════════════════════════════════
+     SCREEN 2 — CLIENT PDF
+══════════════════════════════════════════ -->
 <div id="pdf-screen" class="screen">
-
-  <!-- Toolbar (hidden on print) -->
   <div class="pdf-toolbar no-print">
-    <button class="btn btn-outline btn-sm" onclick="goBack()" style="color:#fff;border-color:rgba(255,255,255,0.35);">← Back to Editor</button>
-    <span class="toolbar-label">Ready to send</span>
-    <button class="btn btn-gold btn-sm" onclick="window.print()">🖨 Save as PDF</button>
+    <button class="btn btn-ghost" onclick="goBack()">← Edit</button>
+    <span style="font-size:.78rem;font-weight:700;color:rgba(255,255,255,.55);margin-left:4px;">Ready to send</span>
+    <div style="margin-left:auto;display:flex;gap:10px;">
+      <button class="btn btn-gold btn-sm" onclick="window.print()">🖨 Save as PDF</button>
+    </div>
   </div>
 
-  <!-- Document -->
-  <div class="pdf-doc" id="pdf-doc">
-
-    <!-- Header -->
-    <div class="pdf-header">
+  <div class="pdf-doc">
+    <div class="pdf-hdr">
       <div class="pdf-logo">Your<em>Policy</em></div>
       <div class="pdf-logo-sub">Coverage Comparison</div>
-      <div class="pdf-headline">Your Personalized<br>Coverage Comparison</div>
-      <div class="pdf-tagline">We've shopped the market on your behalf. Here's a clear, side-by-side look at your options so you can choose with confidence.</div>
-
-      <div class="pdf-meta-strip" id="pdf-meta-strip">
-        <!-- populated by JS -->
-      </div>
+      <div class="pdf-hed">Your Personalized<br>Coverage Comparison</div>
+      <div class="pdf-tag">We've shopped the market on your behalf. Here's a clear, side-by-side look at your options so you can choose with confidence.</div>
+      <div class="pdf-meta" id="pdf-meta"></div>
     </div>
 
-    <!-- Body -->
     <div class="pdf-body">
+      <div id="pdf-rec"></div>
 
-      <!-- Recommendation banner -->
-      <div id="pdf-rec-banner"></div>
-
-      <!-- Comparison table -->
-      <div class="pdf-section-head">
-        <div>
-          <span class="eyebrow">Side-by-Side</span>
-          <h2 id="pdf-table-heading">Coverage Comparison</h2>
-        </div>
+      <div class="pdf-sec-hed">
+        <span class="ey">Side-by-Side</span>
+        <h2 id="pdf-tbl-hed">Coverage Comparison</h2>
       </div>
+      <div class="tbl-wrap"><table class="cmp" id="cmp-table"></table></div>
 
-      <div class="cmp-table-wrap">
-        <table class="cmp" id="cmp-table">
-          <!-- populated by JS -->
-        </table>
-      </div>
-
-      <!-- Agent notes -->
       <div id="pdf-notes"></div>
-
-      <!-- Coverage standard -->
-      <div class="coverage-standard">
+      <div class="cov-std">
         <strong>YourPolicy Coverage Standards</strong>
-        Auto policies are quoted at a minimum 100/300 bodily injury liability. Home policies include a minimum of $300,000 liability and full replacement cost coverage. If you have questions about your limits, we're always available to review what's right for your household.
+        Auto policies are quoted at a minimum 100/300 bodily injury liability. Home policies include a minimum of $300,000 liability and full replacement cost coverage. Questions about your limits? We're always here to review what's right for your household.
       </div>
-
     </div>
 
-    <!-- Footer -->
-    <div class="pdf-footer">
+    <div class="pdf-ftr">
       <div>
-        <div class="pdf-footer-logo">Your<em>Policy</em></div>
-        <div class="pdf-footer-legal">This comparison is prepared by YourPolicy for informational purposes only. Coverage details are based on available quote information at the time of preparation. Final policy terms, conditions, and premiums are subject to carrier underwriting approval. This document does not constitute a binder or guarantee of coverage.</div>
+        <div class="ftr-logo">Your<em>Policy</em></div>
+        <div class="ftr-legal">This comparison is prepared by YourPolicy for informational purposes only. Coverage details are based on available quote information at the time of preparation. Final policy terms, conditions, and premiums are subject to carrier underwriting approval.</div>
       </div>
-      <div class="pdf-footer-agent" id="pdf-footer-agent">
-        <!-- populated by JS -->
-      </div>
+      <div class="ftr-agent" id="pdf-ftr-agent"></div>
     </div>
-
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════
-     JAVASCRIPT
-════════════════════════════════════════════════════ -->
 <script>
-// ── CARRIER LIST ──────────────────────────────────────
-const CARRIERS = [
-  'Progressive','Travelers','Liberty Mutual','PEMCO','Allstate',
-  'Foremost','Hanover','Goodville Mutual','Acuity','Hartford',
-  'Safeco','State Farm','Nationwide','Bristol West','Other'
+// ── CARRIERS ──────────────────────────────────────────
+const TOP_CARRIERS = ['Progressive','Travelers','Liberty Mutual','PEMCO','Allstate','Foremost','Hanover','Goodville Mutual','Acuity','Hartford','Safeco','State Farm','Nationwide','Bristol West'];
+
+// ── COVERAGE SCHEMA ───────────────────────────────────
+const SECTIONS = [
+  { label:'Premium', fields:[
+    {key:'premium', label:'Total Annual Premium', note:'Full-term cost', isPremium:true},
+    {key:'monthly', label:'Monthly Payment',      note:'Estimated (fees may apply)'},
+  ]},
+  { label:'Auto Coverages', fields:[
+    {key:'bi',        label:'Bodily Injury',          note:'Per person / per accident'},
+    {key:'pd',        label:'Property Damage',        note:'Per accident'},
+    {key:'um',        label:'Uninsured Motorist',     note:'UM / UIM'},
+    {key:'collision', label:'Collision',              note:'Deductible'},
+    {key:'comp',      label:'Comprehensive',          note:'Deductible'},
+    {key:'medpay',    label:'Medical Payments / PIP', note:'Per person'},
+    {key:'rental',    label:'Rental Reimbursement',   note:'Per day / max'},
+    {key:'roadside',  label:'Roadside Assistance',    note:''},
+  ]},
+  { label:'Home Coverages', fields:[
+    {key:'dwelling',  label:'Dwelling (Coverage A)',  note:'Replacement cost'},
+    {key:'contents',  label:'Personal Property (C)',  note:'Replacement cost'},
+    {key:'loss_use',  label:'Loss of Use (D)',        note:'Additional living expenses'},
+    {key:'liab_h',    label:'Home Liability',         note:'Per occurrence'},
+    {key:'med_h',     label:'Medical Payments',       note:'Per person'},
+  ]},
+  { label:'Additional', fields:[
+    {key:'umbrella',  label:'Umbrella Limit',         note:'If quoted'},
+    {key:'quote_num', label:'Quote / Policy #',       note:''},
+    {key:'eff_date',  label:'Quote Effective Date',   note:''},
+  ]},
 ];
 
-// ── COVERAGE FIELDS ───────────────────────────────────
-const SECTIONS = [
-  {
-    label: 'Premium',
-    fields: [
-      { key:'premium',   label:'Total Annual Premium',   note:'Full-term cost',              isPremium: true },
-      { key:'monthly',   label:'Monthly Payment',        note:'Estimated (fees may apply)'                  },
-    ]
-  },
-  {
-    label: 'Auto Coverages',
-    fields: [
-      { key:'bi',        label:'Bodily Injury',          note:'Per person / per accident'   },
-      { key:'pd',        label:'Property Damage',        note:'Per accident'                },
-      { key:'um',        label:'Uninsured Motorist',     note:'UM / UIM'                    },
-      { key:'collision', label:'Collision',              note:'Deductible'                  },
-      { key:'comp',      label:'Comprehensive',          note:'Deductible'                  },
-      { key:'medpay',    label:'Medical Payments / PIP', note:'Per person'                  },
-      { key:'rental',    label:'Rental Reimbursement',   note:'Per day / max'               },
-      { key:'roadside',  label:'Roadside Assistance',    note:'Included / Not included'     },
-    ]
-  },
-  {
-    label: 'Home Coverages',
-    fields: [
-      { key:'dwelling',  label:'Dwelling (Coverage A)',  note:'Replacement cost'            },
-      { key:'contents',  label:'Personal Property (C)',  note:'Replacement cost'            },
-      { key:'loss_use',  label:'Loss of Use (D)',        note:'Additional living expenses'  },
-      { key:'liab_h',    label:'Home Liability',         note:'Per occurrence'              },
-      { key:'med_h',     label:'Medical Payments',       note:'Per person'                  },
-    ]
-  },
-  {
-    label: 'Additional',
-    fields: [
-      { key:'umbrella',  label:'Umbrella Limit',         note:'If quoted'                   },
-      { key:'deductible',label:'Deductible (General)',   note:'Where applicable'            },
-      { key:'eff_date',  label:'Quote Effective Date',   note:''                            },
-      { key:'quote_num', label:'Quote / Policy #',       note:''                            },
-    ]
-  }
+// ── PASTE PARSER ──────────────────────────────────────
+const PATTERNS = [
+  {key:'premium',   labels:['total premium','annual premium','6-month premium','6 month premium','semi-annual premium','total cost','total due','total policy premium','policy premium','annual cost']},
+  {key:'monthly',   labels:['monthly payment','monthly premium','monthly installment','per month','mo.']},
+  {key:'bi',        labels:['bodily injury liability','bodily injury','bi liability','bi/pd','liability coverage','each person / each accident']},
+  {key:'pd',        labels:['property damage liability','property damage','pd liability']},
+  {key:'um',        labels:['uninsured motorist','underinsured motorist','um/uim','uninsured/underinsured','um coverage','uim coverage']},
+  {key:'collision', labels:['collision']},
+  {key:'comp',      labels:['comprehensive','other than collision','otc']},
+  {key:'medpay',    labels:['medical payments','med pay','medpay','personal injury protection','pip']},
+  {key:'rental',    labels:['rental reimbursement','rental car','transportation expense','rental coverage']},
+  {key:'roadside',  labels:['roadside assistance','emergency road','towing','roadside']},
+  {key:'dwelling',  labels:['dwelling','coverage a','building coverage','home coverage','residence']},
+  {key:'contents',  labels:['personal property','coverage c','contents']},
+  {key:'loss_use',  labels:['loss of use','coverage d','additional living','temporary living']},
+  {key:'liab_h',    labels:['liability','personal liability','occurrence limit','aggregate limit']},
+  {key:'umbrella',  labels:['umbrella','excess liability','personal umbrella']},
+  {key:'quote_num', labels:['quote number','quote #','quote no','policy number','policy #','proposal number']},
+  {key:'eff_date',  labels:['effective date','start date','policy date','inception date','coverage begin']},
 ];
+
+function parseQuoteText(raw) {
+  const lines = raw.split('\n').map(l => l.trim()).filter(Boolean);
+  const fields = {};
+
+  for (const line of lines) {
+    const lower = line.toLowerCase();
+    for (const pat of PATTERNS) {
+      if (fields[pat.key]) continue;
+      for (const lbl of pat.labels) {
+        if (lower.includes(lbl)) {
+          // Try colon/dash/tab split
+          const m = line.match(/[:\-–—\t]\s*(.+)$/);
+          if (m) {
+            fields[pat.key] = m[1].trim().split(/\s{3,}/)[0].trim();
+          } else {
+            // Multi-space split
+            const parts = line.split(/\s{2,}/);
+            if (parts.length > 1) fields[pat.key] = parts[parts.length - 1].trim();
+          }
+          break;
+        }
+      }
+    }
+  }
+  return fields;
+}
 
 // ── STATE ─────────────────────────────────────────────
 let carriers = [];
 let recIdx = -1;
+let currentStep = 1;
 
 // ── INIT ──────────────────────────────────────────────
 addCarrier('Progressive');
 addCarrier('Travelers');
-addCarrier();
+addCarrier('');
+
+// ── STEP NAVIGATION ───────────────────────────────────
+function goStep(n) {
+  currentStep = n;
+  [1,2,3].forEach(i => {
+    document.getElementById('panel-'+i).style.display = i===n ? '' : 'none';
+    const el = document.getElementById('step'+i);
+    el.className = 'step' + (i===n ? ' active' : i<n ? ' done' : '');
+  });
+  window.scrollTo(0,0);
+}
 
 // ── ADD / REMOVE CARRIER ──────────────────────────────
-function addCarrier(preset = '') {
-  const id = Date.now() + Math.random();
-  carriers.push({ id, name: preset, fields: {}, isRec: false });
-  renderCarrierBlocks();
+function addCarrier(preset='') {
+  carriers.push({id:Date.now()+Math.random(), name:preset, fields:{}, mode:'paste'});
+  renderBlocks();
 }
-
 function removeCarrier(id) {
-  const idx = carriers.findIndex(c => c.id === id);
-  carriers = carriers.filter(c => c.id !== id);
-  if (recIdx === idx) recIdx = -1;
-  else if (recIdx > idx) recIdx--;
-  renderCarrierBlocks();
+  const idx = carriers.findIndex(c=>c.id===id);
+  carriers = carriers.filter(c=>c.id!==id);
+  if (recIdx===idx) recIdx=-1; else if (recIdx>idx) recIdx--;
+  renderBlocks();
+}
+function toggleRec(idx) {
+  recIdx = recIdx===idx ? -1 : idx;
+  carriers.forEach((c,i)=>c.isRec=i===recIdx);
+  renderBlocks();
+}
+function setMode(idx, mode) {
+  carriers[idx].mode = mode;
+  renderBlocks();
 }
 
-function setRec(idx) {
-  recIdx = recIdx === idx ? -1 : idx;
-  carriers.forEach((c, i) => c.isRec = i === recIdx);
-  renderCarrierBlocks();
-}
-
-// ── RENDER PRODUCER INPUTS ────────────────────────────
-function renderCarrierBlocks() {
+// ── RENDER CARRIER BLOCKS ─────────────────────────────
+function renderBlocks() {
   const wrap = document.getElementById('carrier-blocks');
-  wrap.innerHTML = carriers.map((c, ci) => `
-    <div class="carrier-block" id="cb-${c.id}">
+  wrap.innerHTML = carriers.map((c,ci) => {
+    const isPaste = c.mode !== 'manual';
+    return `
+    <div class="carrier-block ${recIdx===ci?'is-rec':''}" id="cb-${c.id}">
       <div class="carrier-block-header">
-        <div class="carrier-select-wrap">
-          <select style="flex:1;min-width:180px;" onchange="carriers[${ci}].name=this.value;syncCarrierName(${ci},this.value)">
-            <option value="">Select carrier...</option>
-            ${CARRIERS.map(n=>`<option value="${n}" ${c.name===n?'selected':''}>${n}</option>`).join('')}
-          </select>
-          <input type="text" placeholder="Or type name" style="flex:1;min-width:130px;"
-            value="${c.name&&!CARRIERS.includes(c.name)?c.name:''}"
-            oninput="carriers[${ci}].name=this.value||carriers[${ci}].name">
+        <select style="font-size:.9rem;font-weight:800;color:var(--teal-700);border:1.5px solid var(--border);border-radius:8px;padding:7px 32px 7px 12px;background:#fff;min-width:170px;" onchange="carriers[${ci}].name=this.value;renderBlocks()">
+          <option value="">Select carrier...</option>
+          ${TOP_CARRIERS.map(n=>`<option value="${n}" ${c.name===n?'selected':''}>${n}</option>`).join('')}
+          <option value="__other">Other (type below)</option>
+        </select>
+        ${c.name==='__other'||(!TOP_CARRIERS.includes(c.name)&&c.name) ? `<input type="text" placeholder="Carrier name" style="font-size:.88rem;padding:7px 11px;border-radius:8px;border:1.5px solid var(--border);width:150px;" value="${esc(c.name==='__other'?'':c.name)}" oninput="carriers[${ci}].name=this.value">` : ''}
+        <div style="display:flex;gap:6px;margin-left:4px;">
+          <div class="mode-pill ${isPaste?'active':''}" onclick="setMode(${ci},'paste')">⚡ Paste</div>
+          <div class="mode-pill ${!isPaste?'active':''}" onclick="setMode(${ci},'manual')">✏️ Manual</div>
         </div>
-        <label class="rec-toggle ${recIdx===ci?'active':''}" onclick="setRec(${ci})">
-          <input type="radio" name="rec">
+        <div class="rec-pill ${recIdx===ci?'active':''}" onclick="toggleRec(${ci})">
           ${recIdx===ci?'★ Recommended':'☆ Recommend'}
-        </label>
-        <button class="remove-btn" onclick="removeCarrier(${c.id})">✕ Remove</button>
-      </div>
-
-      <div class="coverage-grid">
-        ${SECTIONS.flatMap(s => s.fields).map(f => `
-          <div class="coverage-field">
-            <label class="field-label">${f.label}</label>
-            <input type="text" placeholder="—"
-              value="${esc(c.fields[f.key]||'')}"
-              oninput="carriers[${ci}].fields['${f.key}']=this.value">
-          </div>
-        `).join('')}
-      </div>
-    </div>
-  `).join('');
-}
-
-function syncCarrierName(ci, val) {
-  if (val !== 'Other') carriers[ci].name = val;
-}
-
-// ── GENERATE PDF OUTPUT ───────────────────────────────
-function generatePDF() {
-  if (!carriers.length) { alert('Add at least one carrier quote.'); return; }
-
-  const client      = v('f-client')      || 'Valued Client';
-  const policyType  = v('f-policy-type') || '';
-  const effDate     = formatDate(v('f-eff-date'));
-  const curCarrier  = v('f-current-carrier') || '';
-  const curPremium  = v('f-current-premium') || '';
-  const agentName   = v('f-agent')  || 'Your YourPolicy Agent';
-  const agentPhone  = v('f-phone')  || '';
-  const agentEmail  = v('f-email')  || '';
-  const notes       = v('f-notes')  || '';
-  const aro         = v('f-aro')    || '';
-
-  // Find lowest annual premium
-  let lowestPrem = Infinity, lowestIdx = -1;
-  carriers.forEach((c, i) => {
-    const n = parseDollar(c.fields.premium);
-    if (n < lowestPrem) { lowestPrem = n; lowestIdx = i; }
-  });
-
-  const recCarrier = recIdx >= 0 ? carriers[recIdx] : null;
-
-  // ── META STRIP ──
-  document.getElementById('pdf-meta-strip').innerHTML = [
-    ['Prepared For', client],
-    ['Policy Type',  policyType || '—'],
-    ['Effective Date', effDate || '—'],
-    ['Current Carrier', curCarrier || '—'],
-    ['Current Premium', curPremium || '—'],
-    ['Date Prepared', today()],
-  ].map(([l,v]) => `
-    <div class="pdf-meta-item">
-      <label>${l}</label>
-      <span>${esc(v)}</span>
-    </div>
-  `).join('');
-
-  // ── RECOMMENDATION BANNER ──
-  let recHTML = '';
-  if (recCarrier) {
-    const recPrem = recCarrier.fields.premium || '';
-    const savings = calcSavings(curPremium, recPrem);
-    recHTML = `
-      <div class="rec-banner">
-        <div class="rec-banner-icon">⭐</div>
-        <div style="flex:1;">
-          <h3>Our Recommendation: ${esc(recCarrier.name)}</h3>
-          <p>Based on your coverage needs and household profile, we recommend the following carrier and coverage package.</p>
-          <div class="rec-banner-stats">
-            ${recPrem ? `<div class="rec-stat"><div class="rs-label">Annual Premium</div><div class="rs-val green">${esc(recPrem)}</div></div>` : ''}
-            ${recCarrier.fields.monthly ? `<div class="rec-stat"><div class="rs-label">Monthly Payment</div><div class="rs-val">${esc(recCarrier.fields.monthly)}</div></div>` : ''}
-            ${recCarrier.fields.bi ? `<div class="rec-stat"><div class="rs-label">Bodily Injury</div><div class="rs-val">${esc(recCarrier.fields.bi)}</div></div>` : ''}
-            ${savings ? `<div class="rec-stat"><div class="rs-label">Est. Annual Savings</div><div class="rs-val gold">${savings}</div></div>` : ''}
-          </div>
         </div>
-      </div>`;
+        <button class="remove-btn" onclick="removeCarrier(${c.id})">✕</button>
+      </div>
+
+      ${isPaste ? `
+        <div class="paste-zone">
+          <label class="fl" style="margin-bottom:6px;">Paste raw quote text from carrier portal or EZLynx</label>
+          <textarea id="paste-${c.id}" placeholder="Paste anything — full quote pages, coverage summaries, EZLynx output. The parser handles messy formatting.&#10;&#10;Example:&#10;Bodily Injury Liability: $100,000/$300,000&#10;Property Damage: $100,000&#10;Collision Deductible: $500&#10;Total Premium: $1,842"
+            oninput="carriers[${ci}].rawPaste=this.value">${esc(c.rawPaste||'')}</textarea>
+          <button class="parse-btn" onclick="parseCarrier(${ci})">⚡ Parse Quote</button>
+        </div>
+        <div class="parse-status ${c.parseStatus||'none'}" id="ps-${c.id}">
+          ${c.parseMsg||'Paste quote text above, then click Parse Quote'}
+        </div>
+        ${Object.keys(c.fields).length ? renderFieldsGrid(c, ci) : ''}
+      ` : renderManualGrid(c, ci)}
+    </div>`;
+  }).join('');
+}
+
+function renderFieldsGrid(c, ci) {
+  return `
+    <div class="sec-label" style="margin-top:14px;">Parsed Coverages — review and edit if needed</div>
+    <div class="fields-grid">
+      ${SECTIONS.flatMap(s=>s.fields).map(f=>`
+        <div class="field-item">
+          <label class="fl">${f.label}</label>
+          <input type="text" placeholder="—" value="${esc(c.fields[f.key]||'')}"
+            oninput="carriers[${ci}].fields['${f.key}']=this.value">
+        </div>
+      `).join('')}
+    </div>`;
+}
+
+function renderManualGrid(c, ci) {
+  return `
+    <div class="fields-grid">
+      ${SECTIONS.flatMap(s=>s.fields).map(f=>`
+        <div class="field-item">
+          <label class="fl">${f.label}<span style="color:var(--muted);"> (${f.note||''})</span></label>
+          <input type="text" placeholder="—" value="${esc(c.fields[f.key]||'')}"
+            oninput="carriers[${ci}].fields['${f.key}']=this.value">
+        </div>
+      `).join('')}
+    </div>`;
+}
+
+// ── PARSE HANDLER ─────────────────────────────────────
+function parseCarrier(ci) {
+  const c = carriers[ci];
+  const raw = c.rawPaste || '';
+  if (!raw.trim()) {
+    c.parseStatus='err'; c.parseMsg='Paste quote text first.';
+    renderBlocks(); return;
   }
-  document.getElementById('pdf-rec-banner').innerHTML = recHTML;
+  const parsed = parseQuoteText(raw);
+  const count = Object.keys(parsed).length;
+  if (count === 0) {
+    c.parseStatus='err';
+    c.parseMsg='No fields detected. Try a different section of the quote, or switch to Manual Entry.';
+  } else {
+    c.fields = {...c.fields, ...parsed};
+    c.parseStatus='ok';
+    c.parseMsg=`✓ ${count} coverage field${count!==1?'s':''} detected automatically`;
+  }
+  renderBlocks();
+  showToast(count > 0 ? `✓ ${count} fields parsed for ${c.name||'carrier'}` : 'No fields found — try Manual Entry');
+}
 
-  // ── TABLE HEADING ──
-  document.getElementById('pdf-table-heading').textContent =
-    `Coverage Comparison — ${carriers.length} Carrier${carriers.length!==1?'s':''}`;
+// ── GENERATE PDF ──────────────────────────────────────
+function generatePDF() {
+  if (!carriers.length) { showToast('Add at least one carrier'); return; }
 
-  // ── COMPARISON TABLE ──
-  const thead = buildThead(lowestIdx);
-  const tbody = buildTbody(lowestIdx);
+  const client     = v('f-client') || 'Valued Client';
+  const ptype      = v('f-ptype') || '';
+  const eff        = fmtDate(v('f-eff'));
+  const curCarrier = v('f-cur-carrier') || '';
+  const curPrem    = v('f-cur-prem') || '';
+  const agent      = v('f-agent') || 'Your YourPolicy Agent';
+  const phone      = v('f-phone') || '';
+  const email      = v('f-email') || '';
+  const notes      = v('f-notes') || '';
+  const aro        = v('f-aro') || '';
+
+  // Lowest premium
+  let lowPrem=Infinity, lowIdx=-1;
+  carriers.forEach((c,i)=>{ const n=parseDollar(c.fields.premium); if(n<lowPrem){lowPrem=n;lowIdx=i;} });
+
+  const rec = recIdx >= 0 ? carriers[recIdx] : null;
+
+  // Meta strip
+  document.getElementById('pdf-meta').innerHTML = [
+    ['Prepared For', client],
+    ['Policy Type', ptype||'—'],
+    ['Effective Date', eff||'—'],
+    ['Current Carrier', curCarrier||'—'],
+    ['Current Premium', curPrem||'—'],
+    ['Date Prepared', today()],
+  ].map(([l,val])=>`<div class="pdf-meta-item"><label>${l}</label><span>${esc(val)}</span></div>`).join('');
+
+  // Rec banner
+  let recHTML = '';
+  if (rec) {
+    const sv = calcSavings(curPrem, rec.fields.premium);
+    recHTML = `<div class="rec-banner">
+      <div class="rec-icon">⭐</div>
+      <div style="flex:1">
+        <h3>Our Recommendation: ${esc(rec.name)}</h3>
+        <p>Based on your coverage profile and household needs, we recommend this carrier and coverage package.</p>
+        <div class="rec-stats">
+          ${rec.fields.premium?`<div class="rec-stat"><div class="rl">Annual Premium</div><div class="rv green">${esc(rec.fields.premium)}</div></div>`:''}
+          ${rec.fields.monthly?`<div class="rec-stat"><div class="rl">Monthly Payment</div><div class="rv">${esc(rec.fields.monthly)}</div></div>`:''}
+          ${rec.fields.bi?`<div class="rec-stat"><div class="rl">Bodily Injury</div><div class="rv">${esc(rec.fields.bi)}</div></div>`:''}
+          ${sv?`<div class="rec-stat"><div class="rl">Est. Annual Savings</div><div class="rv gold">${sv}</div></div>`:''}
+        </div>
+      </div>
+    </div>`;
+  }
+  document.getElementById('pdf-rec').innerHTML = recHTML;
+
+  // Table heading
+  document.getElementById('pdf-tbl-hed').textContent = `Coverage Comparison — ${carriers.length} Carrier${carriers.length!==1?'s':''}`;
+
+  // Build table
+  const thead = buildThead(lowIdx);
+  const tbody = buildTbody(lowIdx);
   document.getElementById('cmp-table').innerHTML = thead + tbody;
 
-  // ── AGENT NOTES ──
+  // Notes
   let notesHTML = '';
-  if (notes || aro) {
-    notesHTML = `
-      <div class="agent-notes-box">
-        <h3>📝 Notes from Your Agent</h3>
-        ${notes ? `<div class="note-row"><span class="ni">💬</span><div>${esc(notes)}</div></div>` : ''}
-        ${aro   ? `<div class="note-row"><span class="ni">🛡️</span><div><strong>Coverage Opportunity: </strong>${esc(aro)}</div></div>` : ''}
-        <div class="note-row"><span class="ni">📞</span><div>Questions? <strong>Call or text your agent directly</strong> — we'll walk you through any of these options before you decide.</div></div>
-      </div>`;
+  if (notes||aro) {
+    notesHTML = `<div class="notes-box"><h3>📝 Notes from Your Agent</h3>
+      ${notes?`<div class="nr"><span class="ni">💬</span><div>${esc(notes)}</div></div>`:''}
+      ${aro?`<div class="nr"><span class="ni">🛡️</span><div><strong>Coverage Opportunity: </strong>${esc(aro)}</div></div>`:''}
+      <div class="nr"><span class="ni">📞</span><div>Questions? <strong>Call or text your agent</strong> — we'll walk you through every option before you decide.</div></div>
+    </div>`;
   }
   document.getElementById('pdf-notes').innerHTML = notesHTML;
 
-  // ── FOOTER ──
-  document.getElementById('pdf-footer-agent').innerHTML = `
-    <strong>${esc(agentName)}</strong>
-    ${agentPhone ? `<div>${esc(agentPhone)}</div>` : ''}
-    ${agentEmail ? `<div>${esc(agentEmail)}</div>` : ''}
-    <div style="color:var(--teal-500);font-weight:700;margin-top:4px;">your-policy.com</div>
-  `;
+  // Footer
+  document.getElementById('pdf-ftr-agent').innerHTML = `
+    <strong>${esc(agent)}</strong>
+    ${phone?`<div>${esc(phone)}</div>`:''}
+    ${email?`<div>${esc(email)}</div>`:''}
+    <div style="color:var(--teal-500);font-weight:700;margin-top:3px;">your-policy.com</div>`;
 
-  // ── SHOW PDF SCREEN ──
   showScreen('pdf-screen');
   window.scrollTo(0,0);
 }
 
-function buildThead(lowestIdx) {
-  const ths = carriers.map((c, i) => {
-    const isRec  = i === recIdx;
-    const isBest = i === lowestIdx && i !== recIdx;
-    const cls    = isRec ? 'carrier-th is-rec' : isBest ? 'carrier-th is-best' : 'carrier-th';
-    const badge  = isRec
-      ? `<span class="th-carrier-badge badge-rec-gold">★ Recommended</span>`
-      : isBest
-      ? `<span class="th-carrier-badge badge-best">Lowest Premium</span>`
-      : '';
-    return `<th class="${cls}"><span class="th-carrier-name">${esc(c.name||'Carrier')}</span>${badge}</th>`;
+function buildThead(lowIdx) {
+  const ths = carriers.map((c,i)=>{
+    const isRec=i===recIdx, isBest=i===lowIdx&&i!==recIdx;
+    const cls=isRec?'cth is-rec':isBest?'cth is-best':'cth';
+    const badge=isRec?`<span class="th-badge tb-rec">★ Recommended</span>`:isBest?`<span class="th-badge tb-best">Lowest Premium</span>`:'';
+    return `<th class="${cls}"><span class="th-name">${esc(c.name||'Carrier')}</span>${badge}</th>`;
   }).join('');
-  return `<thead><tr class="carrier-row"><th class="label-th">Coverage / Detail</th>${ths}</tr></thead>`;
+  return `<thead><tr class="chr"><th class="lth">Coverage / Detail</th>${ths}</tr></thead>`;
 }
 
-function buildTbody(lowestIdx) {
-  let rows = '<tbody>';
-  SECTIONS.forEach(section => {
-    // Only render section if at least one carrier has a value in it
-    const hasAny = section.fields.some(f => carriers.some(c => c.fields[f.key]));
+function buildTbody(lowIdx) {
+  let rows='<tbody>';
+  SECTIONS.forEach(sec=>{
+    const hasAny=sec.fields.some(f=>carriers.some(c=>c.fields[f.key]));
     if (!hasAny) return;
-
-    rows += `<tr class="section-row"><td colspan="${carriers.length+1}">${section.label}</td></tr>`;
-
-    section.fields.forEach(f => {
-      const vals = carriers.map(c => c.fields[f.key] || '');
-      const anyVal = vals.some(v => v);
-      if (!anyVal) return;
-
-      // Best value for premium fields
-      let bestValIdx = -1;
+    rows+=`<tr class="sr"><td colspan="${carriers.length+1}">${sec.label}</td></tr>`;
+    sec.fields.forEach(f=>{
+      const vals=carriers.map(c=>c.fields[f.key]||'');
+      if (!vals.some(x=>x)) return;
+      let bestIdx=-1;
       if (f.isPremium) {
-        let low = Infinity;
-        vals.forEach((v, i) => {
-          const n = parseDollar(v);
-          if (n < low) { low = n; bestValIdx = i; }
-        });
+        let low=Infinity;
+        vals.forEach((val,i)=>{const n=parseDollar(val);if(n<low){low=n;bestIdx=i;}});
       }
-
-      const tds = vals.map((val, i) => {
-        const isBest = f.isPremium && i === bestValIdx && val;
-        const isEmpty = !val;
-        const cls = `val-td ${isBest?'best-val':''} ${isEmpty?'empty-val':''}`;
-        const badge = isBest ? `<span class="inline-badge">Best</span>` : '';
-        return `<td class="${cls}">${esc(val||'—')}${badge}</td>`;
+      const tds=vals.map((val,i)=>{
+        const isBest=f.isPremium&&i===bestIdx&&val;
+        const isEmpty=!val;
+        const cls=`vtd ${isBest?'bv':''} ${isEmpty?'ev':''}`;
+        return `<td class="${cls}">${esc(val||'—')}${isBest?'<span class="ibadge">Best</span>':''}</td>`;
       }).join('');
-
-      const rowCls = f.isPremium ? 'data-row premium-row' : 'data-row';
-      rows += `
-        <tr class="${rowCls}">
-          <td class="label-td">${esc(f.label)}<span class="td-note">${f.note||''}</span></td>
-          ${tds}
-        </tr>`;
+      rows+=`<tr class="${f.isPremium?'dr pr':'dr'}"><td class="ltd">${esc(f.label)}<span class="tn">${f.note||''}</span></td>${tds}</tr>`;
     });
   });
-  rows += '</tbody>';
-  return rows;
+  return rows+'</tbody>';
 }
 
-// ── SCREEN NAVIGATION ─────────────────────────────────
+// ── SCREEN NAV ────────────────────────────────────────
 function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
+  document.getElementById('hdr-actions').innerHTML = id==='pdf-screen'
+    ? `<button class="btn btn-ghost" onclick="goBack()">← Edit</button>`:'';
 }
-function goBack() { showScreen('producer-screen'); }
+function goBack(){ showScreen('producer-screen'); }
 
 // ── HELPERS ───────────────────────────────────────────
-function v(id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; }
+function v(id){const e=document.getElementById(id);return e?e.value.trim():'';}
+function parseDollar(s){const n=parseFloat(String(s||'').replace(/[^0-9.]/g,''));return isNaN(n)?Infinity:n;}
+function calcSavings(cur,quoted){const c=parseDollar(cur),q=parseDollar(quoted);if(c===Infinity||q===Infinity||q>=c)return '';return `$${Math.round(c-q).toLocaleString()}/yr`;}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function fmtDate(s){if(!s)return '';const d=new Date(s+'T00:00:00');return d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});}
+function today(){return new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});}
 
-function parseDollar(str) {
-  const n = parseFloat(String(str||'').replace(/[^0-9.]/g,''));
-  return isNaN(n) ? Infinity : n;
-}
-
-function calcSavings(current, quoted) {
-  const c = parseDollar(current);
-  const q = parseDollar(quoted);
-  if (c === Infinity || q === Infinity || q >= c) return '';
-  return `$${Math.round(c - q).toLocaleString()}/yr`;
-}
-
-function esc(str) {
-  return String(str||'')
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-function formatDate(str) {
-  if (!str) return '';
-  const d = new Date(str + 'T00:00:00');
-  return d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
-}
-
-function today() {
-  return new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+let toastTimer;
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),2800);
 }
 </script>
 </body>
